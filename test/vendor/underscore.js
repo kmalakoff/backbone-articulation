@@ -341,37 +341,48 @@
   // Deduces the type of ownership of an item and if available, it retains it (reference counted) or clones it.
   // <br />**Options:**<br />
   // * `properties` - used to disambigate between owning an object and owning each property.<br />
-  // * `clone` - used to disambigate between owning a collection's items and cloning a collection.
+  // * `share_collection` - used to disambigate between owning a collection's items (share) and cloning a collection (don't share).
+  // * `prefer_clone` - used to disambigate when both retain and clone exist. By default retain is prefered (eg. sharing for lower memory footprint).
   _.own = function(obj, options) {
-    if (!obj) return obj;
+    if (!obj || (typeof(obj)!='object')) return obj;
     options || (options = {});
     if (_.isArray(obj)) {
-      if (options.clone) { var a_clone =  []; each(obj, function(value) { a_clone.push(_.own(value)); }); return a_clone; }
-      else { each(obj, function(value) { _.own(value); }); return obj; }
+      if (options.share_collection) { each(obj, function(value) { _.own(value, {prefer_clone: options.prefer_clone}); }); return obj; }
+      else { var a_clone =  []; each(obj, function(value) { a_clone.push(_.own(value, {prefer_clone: options.prefer_clone})); }); return a_clone; }
     }
     else if (options.properties) {
-      if (options.clone) { var o_clone = {}; each(obj, function(value, key) { o_clone[key] = _.own(value); }); return o_clone; }
-      else { each(obj, function(value, key) { _.own(value); }); return obj; }
+      if (options.share_collection) { each(obj, function(value, key) { _.own(value, {prefer_clone: options.prefer_clone}); }); return obj; }
+      else { var o_clone = {}; each(obj, function(value, key) { o_clone[key] = _.own(value, {prefer_clone: options.prefer_clone}); }); return o_clone; }
     }
-    else if (obj.retain) obj.retain();
-    else if (obj.clone) obj.clone();
+    else if (obj.retain) {
+      if (options.prefer_clone && obj.clone) return obj.clone();
+      else obj.retain();
+    }
+    else if (obj.clone) return obj.clone();
     return obj;
   };
 
   // Deduces the type of ownership of an item and if available, it releases it (reference counted) or destroys it.
   // <br />**Options:**<br /> 
   // * `properties` - used to disambigate between owning an object and owning each property.<br />
-  // * `clear` - used to disambigate between clearing disowned items and removing them (by default, they are removed).
+  // * `clear_values` - used to disambigate between clearing disowned items and removing them (by default, they are removed).
   _.disown = function(obj, options) {
-    if (!obj) return obj;
+    if (!obj || (typeof(obj)!='object')) return obj;
     options || (options = {});
     if (_.isArray(obj)) {
-      if (options.clear) { each(obj, function(value, index) { _.disown(value); obj[index]=null; }); return obj; }
-      else { each(obj, function(value) { _.disown(value); }); obj=[]; return obj; }
+      if (options.clear_values) { each(obj, function(value, index) { _.disown(value); obj[index]=null; }); return obj; }
+      else { 
+        each(obj, function(value) { _.disown(value); });
+        obj.length=0; return obj; 
+      }
     }
     else if (options.properties) {
-      if (options.clear) { each(obj, function(value, key) { _.disown(value); obj[key]=null; }); return obj; }
-      else { each(obj, function(value) { _.disown(value); }); obj={}; return obj; }
+      if (options.clear_values) { each(obj, function(value, key) { _.disown(value); obj[key]=null; }); return obj; }
+      else { 
+        each(obj, function(value) { _.disown(value); });
+        for(key in obj) { delete obj[key]; }
+        return obj; 
+      }
     }
     else if (obj.release) obj.release();
     else if (obj.destroy) obj.destroy();
@@ -386,7 +397,7 @@
   // Otherwise, it removes and return the value if it finds it.
   // <br />**Options:**<br /> 
   // * `callback` - if you provide a callback, it calls it with the removed value after the value is removed from the collection. Note: if the options are a function, it is set as the callback.<br />
-  // * `is_value` - used to disambigate between a key or value when removing from a collection that is an object.<br />
+  // * `values` - used to disambigate between a key or value when removing from a collection that is an object.<br />
   // * `first_only` - if you provide a first_only flag, it will stop looking for an value when it finds one that matches.<br />
   // * `preclear` - if you provide a preclear flag, it will clone the passed object, remove all the values, and then remove from the cloned object.
   _.remove = function(obj, matcher, options) {
@@ -479,7 +490,7 @@
       // Object: remove and return all values by key or by value
       else if (_.isArray(matcher)) {
         // The matcher array contains values (returns: object with keys and values)
-        if (options.is_value) {
+        if (options.values) {
           for (i = 0, l = matcher.length; i < l; i++) {
             matcher_value = matcher[i];
             if (options.first_only) { for (key in obj) { if (matcher_value===obj[key]) { removed.push(key); break; } } }
@@ -497,7 +508,7 @@
         }
       } 
       // Object: remove value matching a key (value or undefined return type)
-      else if (_.isString(matcher) && !options.is_value) {
+      else if (_.isString(matcher) && !options.values) {
         single_value = true; ordered_keys = [];
         if (obj.hasOwnProperty(matcher)) { ordered_keys.push(matcher); removed.push(matcher); }
       } 
@@ -832,21 +843,19 @@
     return undefined;
   };
 
-  // Get the value if a dot-delimited or array of keys path exists.
-  _.keypathValue = function(object, keypath, missing_value) {
+  // Gets (if value parameter undefined) or sets a value if a dot-delimited or array of keys path exists.
+  _.keypath = function(object, keypath, value) {
     var keypath_components = _.isString(keypath) ? keypath.split('.') : keypath;
     var value_owner = _.keypathValueOwner(object, keypath_components);
-    if (!value_owner) return missing_value;
-    return value_owner[keypath_components[keypath_components.length-1]];
-  };
-
-  // Set the value if a dot-delimited or array of keys path exists.
-  _.keypathSetValue = function(object, keypath, value) {
-    var keypath_components = _.isString(keypath) ? keypath.split('.') : keypath;
-    var value_owner = _.keypathValueOwner(object, keypath_components);
-    if (!value_owner) return;
-    value_owner[keypath_components[keypath_components.length-1]] = value;
-    return object;
+    if (_.isUndefined(value)) {
+      if (!value_owner) return undefined;
+      return value_owner[keypath_components[keypath_components.length-1]];
+    }
+    else {
+      if (!value_owner) return;
+      value_owner[keypath_components[keypath_components.length-1]] = value;
+      return value_owner[keypath_components[keypath_components.length-1]];
+    }
   };
 
   // Return a sorted list of the function names available on the object.
@@ -956,7 +965,7 @@
     var keypath_components = _.isArray(key) ? key : (_.isString(key) ? key.split('.') : undefined);
 
     if (keypath_components) { 
-      var constructor = (keypath_components.length===1) ? window[keypath_components[0]] : _.keypathValue(window, keypath_components);
+      var constructor = (keypath_components.length===1) ? window[keypath_components[0]] : _.keypath(window, keypath_components);
       return (constructor && _.isConstructor(constructor)) ? constructor : undefined;
     }
     else if (_.isFunction(key) && _.isConstructor(key)) {

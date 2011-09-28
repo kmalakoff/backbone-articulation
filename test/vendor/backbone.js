@@ -562,7 +562,7 @@
         }
         
         if (changed_models.length) {
-          for (var j = 0, len = changed_models.length; j < len; j++) this.trigger('resort', changed_models[j], {});
+          for (i = 0, l = changed_models.length; i < l; i++) this.trigger('resort', changed_models[i], {});
         }
       }
       else {

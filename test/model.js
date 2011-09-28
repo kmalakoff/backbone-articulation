@@ -104,28 +104,28 @@ $(document).ready(function() {
 
   test("Model: memory management clone() and destroy()", function() {
     CloneDestroy = (function() {
-      CloneDestroy.clone_count = 0;
-      function CloneDestroy() { CloneDestroy.clone_count++; }
+      CloneDestroy.instance_count = 0;
+      function CloneDestroy() { CloneDestroy.instance_count++; }
       CloneDestroy.parseJSON = function(obj) { 
         if (obj._type!='CloneDestroy') return null;
         return new CloneDestroy();
       };
       CloneDestroy.prototype.toJSON = function() { return { _type:'CloneDestroy' }; };
-      CloneDestroy.prototype.clone = function() { CloneDestroy.clone_count++; };
-      CloneDestroy.prototype.destroy = function() { CloneDestroy.clone_count--; };
+      CloneDestroy.prototype.clone = function() { return new CloneDestroy(); };
+      CloneDestroy.prototype.destroy = function() { CloneDestroy.instance_count--; };
       return CloneDestroy;
     })();
 
     var attributes = {id: 'superstar', attr1: {_type:'CloneDestroy'}, attr2: {_type:'CloneDestroy'}, attr3: {_type:'CloneDestroy'}};
     var model = new Backbone.Model(), instance = new CloneDestroy(), result;
 
-    ok(CloneDestroy.clone_count===1, '1 referenced instance');
+    ok(CloneDestroy.instance_count===1, '1 referenced instance');
     model.set(model.parse(attributes));
-    ok(CloneDestroy.clone_count===7, '1 referenced instance + 3 in attributes + 3 in previous attributes');
+    ok(CloneDestroy.instance_count===7, '1 referenced instance + 3 in attributes + 3 in previous attributes');
     model.set({attr1: 1});
-    ok(CloneDestroy.clone_count===5, '1 referenced instance + 2 in attributes + 2 in previous attributes');
+    ok(CloneDestroy.instance_count===5, '1 referenced instance + 2 in attributes + 2 in previous attributes');
     model.clear();
-    ok(CloneDestroy.clone_count===1, '1 referenced instance');
+    ok(CloneDestroy.instance_count===1, '1 referenced instance');
   });
 
   test("Model: memory management retain() and release()", function() {
