@@ -6,12 +6,11 @@
 if (!Backbone) alert("Missing Backbone.js");
 if (!Backbone.HAS_ATTRIBUTE_OWNERSHIP) alert("Please upgrade Backbone to a version with attribute ownership");
 
-// Requires Underscore.js with _.parseJSON, _.keypathValueOwner, _.toJSON, _.own, and _.disown.
+// Requires Underscore.js and Underscore-Awesomer.js (_.parseJSON, _.keypathValueOwner, _.toJSON, _.own, and _.disown).
 if (!_) alert("Missing Underscore.js");
-if (!_.parseJSON || !_.keypathValueOwner || !_.toJSON) alert("Please upgrade Underscore to a version with _.parseJSON, _.keypathValueOwner and _.toJSON");
-if (!_.own || !_.disown) alert("Please upgrade Underscore to a version with _.own and _.disown");
+if (!_.AWESOMENESS) alert("Missing Underscore-Awesomer.js");
 
-// Converts all of its models to plain old JSON (if needed) using _.toJSON. 
+// Converts all of its models to plain old JSON (if needed) using _.toJSON.
 Backbone.Collection.prototype.toJSON = function() {
   var models_as_JSON = [];
   for (var i = 0, l = this.models.length; i < l; i++) {
@@ -20,7 +19,7 @@ Backbone.Collection.prototype.toJSON = function() {
   return models_as_JSON;
 };
 
-// Articulations all of its model attributes from plain old JSON to objects (if needed) using _.parseJSON. 
+// Articulations all of its model attributes from plain old JSON to objects (if needed) using _.parseJSON.
 // _.parseJSON looks for a \_type attribute to find a parseJSON method.
 Backbone.Collection.prototype.parse = function(resp, xhr) {
   if (!resp || (!_.isArray(resp))) return resp;

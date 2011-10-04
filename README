@@ -2,7 +2,7 @@
 |B||a||c||k||b||o||n||e||-||A||r||t||i||c||u||l||a||t||i||o||n||.||j||s|
 +-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-+
 
-Backbone-Articulation.js enhances Backbone.js model attributes with object serialization and deserialization. 
+Backbone-Articulation.js enhances Backbone.js model attributes with object serialization and deserialization.
 
 The way it works:
 
@@ -10,7 +10,7 @@ The way it works:
   a) clone() and destroy()
   b) retain() and release()
   c) new() only and using Javascript's garbage collection
-  d) plain old JSON (with no custom serialization) 
+  d) plain old JSON (with no custom serialization)
 
 2) Choose a serialization/deserialization strategy
   a) using toJSON() instance method and parseJSON class or factory method
@@ -24,32 +24,33 @@ If you choose 2a) - take a look at the examples below and:
 To use this:
 
 1) Just put it after Backbone.js in your Javascript script dependencies (it replaces some build in methods).
-2) Until the modifications are rolled into the main library (please let me know if I need to add any new patches/features in the meantime), you will need to use the modified versions of:
-  a) Underscore.js (https://github.com/kmalakoff/underscore)
-  b) Backbone.js (https://github.com/kmalakoff/backbone)
-
+2) Until the modifications are rolled into the main library (please let me know if I need to add any new patches/features in the meantime), you will need to use the modified versions of Backbone:
+  a) Backbone.js (https://github.com/kmalakoff/backbone)
+3) Other dependencies:
+  a) Underscore.js (http://documentcloud.github.com/underscore/)
+  b) Underscore-Awesomer (https://github.com/kmalakoff/underscore-awesomer)
 
 That's it! Go crazy!
 
 A big thank you to Jeremy Ashkenas and DocumentCloud for making all of this Backbone awesomeness possible.
 
 
-Examples: 
+Examples:
 ************
-1) Adding serialization to the built-in Javascript Date class. 
+1) Adding serialization to the built-in Javascript Date class.
 
-Date.prototype.toJSON = function() { 
+Date.prototype.toJSON = function() {
   return {
-    _type:'Date', 
-    year:this.getUTCFullYear(), 
-    month:this.getUTCMonth(), 
+    _type:'Date',
+    year:this.getUTCFullYear(),
+    month:this.getUTCMonth(),
     day:this.getUTCDate(),
     hours:this.getUTCHours(),
     minutes:this.getUTCMinutes(),
     seconds:this.getUTCSeconds()
-  }; 
+  };
 };
-Date.parseJSON = function(obj) { 
+Date.parseJSON = function(obj) {
   if (obj._type!='Date') return null;
   return new Date(Date.UTC(obj.year, obj.month, obj.day, obj.hours, obj.minutes, obj.seconds))
 };
@@ -58,20 +59,20 @@ Date.parseJSON = function(obj) {
 
 window.SomeNamespace || (window.SomeNamespace = {});
 SomeNamespace.SomeClass = (function() {
-  function SomeClass(int_value, string_value, date_value) { 
-    this.int_value = int_value; 
-    this.string_value = string_value; 
-    this.date_value = date_value; 
+  function SomeClass(int_value, string_value, date_value) {
+    this.int_value = int_value;
+    this.string_value = string_value;
+    this.date_value = date_value;
   }
-  SomeClass.prototype.toJSON = function() { 
+  SomeClass.prototype.toJSON = function() {
     return {
-      _type:'SomeNamespace.SomeClass', 
-      int_value:this.int_value, 
-      string_value:this.string_value, 
+      _type:'SomeNamespace.SomeClass',
+      int_value:this.int_value,
+      string_value:this.string_value,
       date_value:this.date_value
-    }; 
+    };
   };
-  SomeClass.parseJSON = function(obj) { 
+  SomeClass.parseJSON = function(obj) {
     if (obj._type!='SomeNamespace.SomeClass') return null;
     return new SomeClass(obj.int_value, obj.string_value, Date.parseJSON(obj.date_value));
   };
