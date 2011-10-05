@@ -10,6 +10,9 @@ if (!Backbone.HAS_ATTRIBUTE_OWNERSHIP) alert("Please upgrade Backbone to a versi
 if (!_) alert("Missing Underscore.js");
 if (!_.AWESOMENESS) alert("Missing Underscore-Awesomer.js");
 
+this.Backbone.Articulation || (Backbone.Articulation = {});
+Backbone.Articulation = '0.1.0';
+
 // Converts all of its models to plain old JSON (if needed) using _.toJSON.
 Backbone.Collection.prototype.toJSON = function() {
   var models_as_JSON = [];

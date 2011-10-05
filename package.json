@@ -1,0 +1,12 @@
+{
+  "name"          : "backbone-articulation",
+  "description"   : "Backbone-Articulation.js enhances Backbone.js model attributes with object serialization and deserialization",
+  "homepage"      : "https://github.com/kmalakoff/backbone-articulation",
+  "keywords"      : ["backbone", "backbone.js", "backbone-articulation",  "backbone-articulation.js"],
+  "author"        : "Kevin Malakoff <xmann.intl@gmail.com>",
+  "contributors"  : [],
+  "dependencies"  : [],
+  "repository"    : {"type": "git", "url": "git://github.com/kmalakoff/backbone-articulation.git"},
+  "main"          : "backbone-articulation.js",
+  "version"       : "0.1.0"
+}
