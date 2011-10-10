@@ -47,11 +47,13 @@ Backbone.Model.prototype.parse = function(resp, xhr) {
 // Uses _.own to clone(), retain(), or just stores a reference to an articulated attribute object (if needed).
 Backbone.Model.prototype._ownAttribute = function(key, value) {
   if (!value) return;
+  if (value instanceof Backbone.Model) return value; // Backbone.Model has incompatible destroy (DELETE on server)
   return _.own(value);
 };
 
 // Uses _.disown to destroy() or release() to an attribute object (if needed).
 Backbone.Model.prototype._disownAttribute = function(key, value) {
   if (!value) return;
+  if (value instanceof Backbone.Model) return value; // Backbone.Model has incompatible destroy (DELETE on server)
   return _.disown(value);
 };
