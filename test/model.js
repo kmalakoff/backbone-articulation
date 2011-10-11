@@ -2,48 +2,48 @@ $(document).ready(function() {
 
   module("Backbone.Model");
 
-  Date.prototype.toJSON = function() { 
+  Date.prototype.toJSON = function() {
     return {
-      _type:'Date', 
-      year:this.getUTCFullYear(), 
-      month:this.getUTCMonth(), 
+      _type:'Date',
+      year:this.getUTCFullYear(),
+      month:this.getUTCMonth(),
       day:this.getUTCDate(),
       hours:this.getUTCHours(),
       minutes:this.getUTCMinutes(),
       seconds:this.getUTCSeconds()
-    }; 
+    };
   };
-  Date.parseJSON = function(obj) { 
+  Date.parseJSON = function(obj) {
     if (obj._type!='Date') return null;
     return new Date(Date.UTC(obj.year, obj.month, obj.day, obj.hours, obj.minutes, obj.seconds))
   };
-  Date.prototype.isEqual = function(that) { 
+  Date.prototype.isEqual = function(that) {
     var this_date_components = this.toJSON();
     var that_date_components = (that instanceof Date) ? that.toJSON() : that;
     delete this_date_components['_type']; delete that_date_components['_type']
     return _.isEqual(this_date_components, that_date_components);
   };
-  
+
   window.SomeNamespace || (window.SomeNamespace = {});
   SomeNamespace.SomeClass = (function() {
-    function SomeClass(int_value, string_value, date_value) { 
-      this.int_value = int_value; 
-      this.string_value = string_value; 
-      this.date_value = date_value; 
+    function SomeClass(int_value, string_value, date_value) {
+      this.int_value = int_value;
+      this.string_value = string_value;
+      this.date_value = date_value;
     }
-    SomeClass.prototype.toJSON = function() { 
+    SomeClass.prototype.toJSON = function() {
       return {
-        _type:'SomeNamespace.SomeClass', 
-        int_value:this.int_value, 
-        string_value:this.string_value, 
+        _type:'SomeNamespace.SomeClass',
+        int_value:this.int_value,
+        string_value:this.string_value,
         date_value:this.date_value
-      }; 
+      };
     };
-    SomeClass.parseJSON = function(obj) { 
+    SomeClass.parseJSON = function(obj) {
       if (obj._type!='SomeNamespace.SomeClass') return null;
       return new SomeClass(obj.int_value, obj.string_value, Date.parseJSON(obj.date_value));
     };
-    SomeClass.prototype.isEqual = function(that) { 
+    SomeClass.prototype.isEqual = function(that) {
       if (!that) return false;
       else if (that instanceof SomeClass) {
         return ((this.int_value===that.int_value) && (this.string_value===that.string_value) && (_.isEqual(this.date_value, that.date_value)));
@@ -62,13 +62,13 @@ $(document).ready(function() {
     id      : 'test_model',
     name    : 'testy',
     a_class: {
-      _type         : 'SomeNamespace.SomeClass', 
-      int_value     : int_value, 
-      string_value  : string_value, 
+      _type         : 'SomeNamespace.SomeClass',
+      int_value     : int_value,
+      string_value  : string_value,
       date_value    : {
         _type       : 'Date',
-        year        : date_value.getUTCFullYear(), 
-        month       : date_value.getUTCMonth(), 
+        year        : date_value.getUTCFullYear(),
+        month       : date_value.getUTCMonth(),
         day         : date_value.getUTCDate(),
         hours       : date_value.getUTCHours(),
         minutes     : date_value.getUTCMinutes(),
@@ -79,7 +79,7 @@ $(document).ready(function() {
 
   test("Model: deserialize from JSON", function() {
     var model = new Backbone.Model(), result;
-    
+
     result = model.parse(attrs); model.set(result);
     ok(_.size(model.attributes)===3, 'all attributes were deserialized');
     result = model.get('a_class');
@@ -94,7 +94,7 @@ $(document).ready(function() {
     model.set({id: 'test_model', name: 'testy'});
     instance = new SomeNamespace.SomeClass(int_value, string_value, date_value);
     model.set({a_class: instance});
-    
+
     result = model.toJSON();
     ok(_.size(result)===3, 'all attributes were serialized');
     result = result.a_class;
@@ -106,7 +106,7 @@ $(document).ready(function() {
     CloneDestroy = (function() {
       CloneDestroy.instance_count = 0;
       function CloneDestroy() { CloneDestroy.instance_count++; }
-      CloneDestroy.parseJSON = function(obj) { 
+      CloneDestroy.parseJSON = function(obj) {
         if (obj._type!='CloneDestroy') return null;
         return new CloneDestroy();
       };
@@ -132,7 +132,7 @@ $(document).ready(function() {
     RetainRelease = (function() {
       RetainRelease.retain_count = 0;
       function RetainRelease() { RetainRelease.retain_count++; }
-      RetainRelease.parseJSON = function(obj) { 
+      RetainRelease.parseJSON = function(obj) {
         if (obj._type!='RetainRelease') return null;
         return new RetainRelease();
       };
@@ -151,5 +151,45 @@ $(document).ready(function() {
     ok(RetainRelease.retain_count===5, '1 referenced instance + 2 in attributes + 2 in previous attributes');
     model.clear();
     ok(RetainRelease.retain_count===1, '1 referenced instance');
+  });
+  test("Self-Referencing Model", function() {
+    var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
+      for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
+      function ctor() { this.constructor = child; }
+      ctor.prototype = parent.prototype;
+      child.prototype = new ctor;
+      child.__super__ = parent.prototype;
+      return child;
+    };
+
+    SelfReferencingModel = (function() {
+      __extends(SelfReferencingModel, Backbone.RelationalModel);
+      SelfReferencingModel.prototype.relations = [
+        {
+          type: Backbone.HasMany,
+          key: 'children',
+          relatedModel: SelfReferencingModel,
+          includeInJSON: 'id',
+          reverseRelation: {
+            type: Backbone.HasOne,
+            key: 'parent',
+            includeInJSON: 'id'
+          }
+        }
+      ];
+      function SelfReferencingModel(attributes, options) {
+        SelfReferencingModel.__super__.constructor.apply(this, arguments);
+      };
+      return SelfReferencingModel;
+    })();
+
+    parent_model = new SelfReferencingModel({name: 'parent', id: 'parent1', resource_uri: 'srm'});
+    child_model = new SelfReferencingModel({name: 'child', resource_uri: 'srm'});
+    parent_model.get('children').add(child_model);
+    var child_model_json = child_model.toJSON();
+    equal(child_model_json.parent, parent_model.get('id'), 'child serialized with parent');
+    child_model.set({id: 'child1'}); // simulate coming back from the server
+    var parent_model_json = parent_model.toJSON();
+    equal(parent_model_json.children[0], child_model.get('id'), 'parent serialized with child');
   });
 });
