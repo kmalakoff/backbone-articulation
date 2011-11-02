@@ -1,0 +1,5 @@
+This is Backbone with some functionality to handle owning and disowning attributes using Underscore-Awesomer's _.own/_.disown functions.
+
+You can find the latest version at: https://github.com/kmalakoff/Backbone
+
+And if they get rolled into the main branch, this will happily go way!
