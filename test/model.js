@@ -84,19 +84,19 @@ $(document).ready(function() {
     ok(_.size(model.attributes)===3, 'all attributes were deserialized');
     result = model.get('a_class');
     ok(result instanceof SomeNamespace.SomeClass, 'SomeNamespace.SomeClass deserialized as a class');
-    ok(_.isEqual(result, attrs.a_class), 'SomeNamespace.SomeClass deserialized correctly');
+    ok(_.isEqual(result.toJSON(), attrs.a_class), 'SomeNamespace.SomeClass deserialized correctly');
     ok(result.date_value instanceof Date, 'SomeNamespace.SomeClass date_value deserialized as a Date');
     ok(_.isEqual(result.date_value, attrs.a_class.date_value), 'SomeNamespace.SomeClass date_value deserialized correctly');
   });
 
   test("Model: serialize to JSON", function() {
     var model = new Backbone.Model(), instance, result;
-    model.set({id: 'test_model', name: 'testy'});
+    model.set({_type:'SomeNamespace.SomeClass', id: 'test_model', name: 'testy'});
     instance = new SomeNamespace.SomeClass(int_value, string_value, date_value);
     model.set({a_class: instance});
 
     result = model.toJSON();
-    ok(_.size(result)===3, 'all attributes were serialized');
+    ok(_.size(result)===4, 'all attributes were serialized');
     result = result.a_class;
     ok(_.isEqual(result, attrs.a_class), 'SomeNamespace.SomeClass serialized correctly');
     ok(_.isEqual(result.date_value, attrs.a_class.date_value), 'SomeNamespace.SomeClass date_value serialized correctly');
