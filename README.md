@@ -1,6 +1,8 @@
+````
 +-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-+
 |B||a||c||k||b||o||n||e||-||A||r||t||i||c||u||l||a||t||i||o||n||.||j||s|
 +-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-++-+
+````
 
 Backbone-Articulation.js enhances Backbone.js model attributes with object serialization and deserialization.
 
