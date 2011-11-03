@@ -4,7 +4,7 @@
 
 Backbone-Articulation.js enhances Backbone.js model attributes with object serialization and deserialization.
 
-The way it works:
+# The way it works:
 
 1) Choose and implement the lifecycle you want for specific attributes. Choices:
   a) clone() and destroy()
@@ -21,7 +21,7 @@ If you choose 2a) - take a look at the examples below and:
 -> implement a parseJSON() class or factory method that is used to articulation your attributes as objects. Note: your parseJSON method should be in the Javscript global namespace, but Backbone-Articulation.js will traverse nested namespaces as needed to find it (see example 2).
 
 
-To use this:
+# To use it:
 
 1) Just put it after Backbone.js in your Javascript script dependencies (it replaces some build in methods).
 2) Until the modifications are rolled into the main library (please let me know if I need to add any new patches/features in the meantime), you will need to use the modified versions of Backbone:
@@ -30,7 +30,7 @@ To use this:
   a) Underscore.js (http://documentcloud.github.com/underscore/)
   b) Underscore-Awesomer (https://github.com/kmalakoff/underscore-awesomer)
 
-Settings:
+# Settings:
 
 1) Backbone.Articulation.TYPE_UNDERSCORE_SINGULARIZE - if you are using a convention of a lower cased and underscored type field (like CouchDB), set Backbone.Articulation.TYPE_UNDERSCORE_SINGULARIZE to true and include implementations for String.prototype.underscore and String.prototype.singularize (for example, from inflection.js)
   - Note: this is not guaranteed to work unless Class.constructor.name exists
@@ -44,8 +44,7 @@ That's it! Go crazy!
 A big thank you to Jeremy Ashkenas and DocumentCloud for making all of this Backbone awesomeness possible.
 
 
-Examples:
-************
+## Examples:
 1) Adding serialization to the built-in Javascript Date class.
 
 ````
