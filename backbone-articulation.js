@@ -1,4 +1,4 @@
-//     Backbone-Articulation.js 0.1.1
+//     Backbone-Articulation.js 0.1.2
 //     (c) 2011 Kevin Malakoff.
 //     Backbone-Articulation may be freely distributed under the MIT license.
 
@@ -12,7 +12,11 @@ if (!_.AWESOMENESS) alert("Missing Underscore-Awesomer.js");
 if (_.AWESOMENESS!=='1.0.1') alert("Underscore-Awesomer.js needs to be at version 1.0.1 or higher");
 
 this.Backbone.Articulation || (Backbone.Articulation = {});
-Backbone.Articulation = '0.1.1';
+Backbone.Articulation.VERSION = '0.1.2';
+
+// setting - if you set to true, you must provide String.prototype.underscore and String.prototype.singularize (for example, from inflection.js)
+// Note: this is not guaranteed to work unless Class.constructor.name exists
+Backbone.Articulation.TYPE_UNDERSCORE_SINGULARIZE = false;
 
 // Converts all of its models to plain old JSON (if needed) using _.toJSON.
 Backbone.Collection.prototype.toJSON = function() {
@@ -48,12 +52,18 @@ Backbone.Model.prototype.toJSON = function() {
   // ensure there is a type field
   if (!json.hasOwnProperty(_.PARSE_JSON_TYPE_FIELD)) {
     // use the type field
-    if (this.hasOwnProperty(_.PARSE_JSON_TYPE_FIELD)) {
-      json[_.PARSE_JSON_TYPE_FIELD] = this[_.PARSE_JSON_TYPE_FIELD];
-    }
-    // convert the class using an underscore and singularize convention
-    else if (String.prototype.underscore) {
-      json[_.PARSE_JSON_TYPE_FIELD] = _.classOf(this).underscore().singularize();
+    if (this.hasOwnProperty(_.PARSE_JSON_TYPE_FIELD)) { json[_.PARSE_JSON_TYPE_FIELD] = this[_.PARSE_JSON_TYPE_FIELD]; return json; }
+
+    // use the class name
+    var class_name = _.classOf(this);
+    if (class_name) {
+      // convert the class using an underscore and singularize convention, eg. CouchDB "type" field convention
+      if (Backbone.Articulation.TYPE_UNDERSCORE_SINGULARIZE) {
+        if (!String.prototype.underscore) throw new Error("Missing String.prototype.underscore");
+        else if (!String.prototype.singularize) throw new Error("Missing String.prototype.singularize");
+        json[_.PARSE_JSON_TYPE_FIELD] = class_name.underscore().singularize();
+      }
+      else { json[_.PARSE_JSON_TYPE_FIELD] = class_name; }
     }
   }
 

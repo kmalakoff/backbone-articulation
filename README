@@ -30,6 +30,15 @@ To use this:
   a) Underscore.js (http://documentcloud.github.com/underscore/)
   b) Underscore-Awesomer (https://github.com/kmalakoff/underscore-awesomer)
 
+Settings:
+
+1) Backbone.Articulation.TYPE_UNDERSCORE_SINGULARIZE - if you are using a convention of a lower cased and underscored type field (like CouchDB), set Backbone.Articulation.TYPE_UNDERSCORE_SINGULARIZE to true and include implementations for String.prototype.underscore and String.prototype.singularize (for example, from inflection.js)
+  - Note: this is not guaranteed to work unless Class.constructor.name exists
+
+```javascript
+Backbone.Articulation.TYPE_UNDERSCORE_SINGULARIZE = true;
+```
+
 That's it! Go crazy!
 
 A big thank you to Jeremy Ashkenas and DocumentCloud for making all of this Backbone awesomeness possible.
@@ -39,6 +48,7 @@ Examples:
 ************
 1) Adding serialization to the built-in Javascript Date class.
 
+```javascript
 Date.prototype.toJSON = function() {
   return {
     _type:'Date',
@@ -50,13 +60,16 @@ Date.prototype.toJSON = function() {
     seconds:this.getUTCSeconds()
   };
 };
+
 Date.parseJSON = function(obj) {
   if (obj._type!='Date') return null;
   return new Date(Date.UTC(obj.year, obj.month, obj.day, obj.hours, obj.minutes, obj.seconds))
 };
+```
 
 2) Creating custom serialization for one of your classes.
 
+```javascript
 window.SomeNamespace || (window.SomeNamespace = {});
 SomeNamespace.SomeClass = (function() {
   function SomeClass(int_value, string_value, date_value) {
@@ -78,4 +91,4 @@ SomeNamespace.SomeClass = (function() {
   };
   return SomeClass;
 })();
-
+```
