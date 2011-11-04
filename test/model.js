@@ -152,44 +152,4 @@ $(document).ready(function() {
     model.clear();
     ok(RetainRelease.retain_count===1, '1 referenced instance');
   });
-  test("Self-Referencing Model", function() {
-    var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
-      for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
-      function ctor() { this.constructor = child; }
-      ctor.prototype = parent.prototype;
-      child.prototype = new ctor;
-      child.__super__ = parent.prototype;
-      return child;
-    };
-
-    SelfReferencingModel = (function() {
-      __extends(SelfReferencingModel, Backbone.RelationalModel);
-      SelfReferencingModel.prototype.relations = [
-        {
-          type: Backbone.HasMany,
-          key: 'children',
-          relatedModel: SelfReferencingModel,
-          includeInJSON: 'id',
-          reverseRelation: {
-            type: Backbone.HasOne,
-            key: 'parent',
-            includeInJSON: 'id'
-          }
-        }
-      ];
-      function SelfReferencingModel(attributes, options) {
-        SelfReferencingModel.__super__.constructor.apply(this, arguments);
-      };
-      return SelfReferencingModel;
-    })();
-
-    parent_model = new SelfReferencingModel({name: 'parent', id: 'parent1', resource_uri: 'srm'});
-    child_model = new SelfReferencingModel({name: 'child', resource_uri: 'srm'});
-    parent_model.get('children').add(child_model);
-    var child_model_json = child_model.toJSON();
-    equal(child_model_json.parent, parent_model.get('id'), 'child serialized with parent');
-    child_model.set({id: 'child1'}); // simulate coming back from the server
-    var parent_model_json = parent_model.toJSON();
-    equal(parent_model_json.children[0], child_model.get('id'), 'parent serialized with child');
-  });
 });

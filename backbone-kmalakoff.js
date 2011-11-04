@@ -609,8 +609,10 @@
     // Reset all internal state. Called when the collection is reset.
     _reset : function(options) {
       this.length = 0;
-	  // Backbone.Relational resues models so even though this lifecycle is over, it may live on. Or at least it will consume memory
-	  if (!Backbone.Relational && this.models && this.models.length) { _.each(this.models, function(model) { model.clear({silent: true}); }); }
+
+      // Backbone.Relational resues models so even though this lifecycle is over, it may live on. Or at least it will consume memory
+      if (!Backbone.Relational && this.models && this.models.length) { _.each(this.models, function(model) { model.clear({silent: true}); }); }
+
       this.models = [];
       this._byId  = {};
       this._byCid = {};
