@@ -14,7 +14,7 @@ $(document).ready(function() {
   CloneDestroy = (function() {
     CloneDestroy.instance_count = 0;
     function CloneDestroy() { CloneDestroy.instance_count++; }
-    CloneDestroy.parseJSON = function(obj) {
+    CloneDestroy.fromJSON = function(obj) {
       if (obj._type!='CloneDestroy') return null;
       return new CloneDestroy();
     };

@@ -14,7 +14,7 @@ $(document).ready(function() {
   CloneDestroy = (function() {
     CloneDestroy.instance_count = 0;
     function CloneDestroy() { CloneDestroy.instance_count++; }
-    CloneDestroy.parseJSON = function(obj) {
+    CloneDestroy.fromJSON = function(obj) {
       if (obj._type!='CloneDestroy') return null;
       return new CloneDestroy();
     };
@@ -82,7 +82,7 @@ $(document).ready(function() {
 
   test("Collection: Backbone.Articulation.TYPE_UNDERSCORE_SINGULARIZE", function() {
     Backbone.Articulation.TYPE_UNDERSCORE_SINGULARIZE = true;
-    _.PARSE_JSON_TYPE_FIELD = "type";
+    _.FROM_JSON_TYPE_FIELD = "type";
 
     var collection = new Backbone.Collection();
     collection.add(new SomeModel({id: 0, attr1: new CloneDestroy(), attr2: new CloneDestroy(), attr3: new CloneDestroy()}))
@@ -98,6 +98,6 @@ $(document).ready(function() {
 
     // return to defaults
     Backbone.Articulation.TYPE_UNDERSCORE_SINGULARIZE = false;
-    _.PARSE_JSON_TYPE_FIELD = "_type";
+    _.FROM_JSON_TYPE_FIELD = "_type";
   });
 });

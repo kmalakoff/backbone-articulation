@@ -13,7 +13,7 @@ $(document).ready(function() {
       seconds:this.getUTCSeconds()
     };
   };
-  Date.parseJSON = function(obj) {
+  Date.fromJSON = function(obj) {
     if (obj._type!='Date') return null;
     return new Date(Date.UTC(obj.year, obj.month, obj.day, obj.hours, obj.minutes, obj.seconds))
   };
@@ -39,9 +39,9 @@ $(document).ready(function() {
         date_value:this.date_value
       };
     };
-    SomeClass.parseJSON = function(obj) {
+    SomeClass.fromJSON = function(obj) {
       if (obj._type!='SomeNamespace.SomeClass') return null;
-      return new SomeClass(obj.int_value, obj.string_value, Date.parseJSON(obj.date_value));
+      return new SomeClass(obj.int_value, obj.string_value, Date.fromJSON(obj.date_value));
     };
     SomeClass.prototype.isEqual = function(that) {
       if (!that) return false;
@@ -106,7 +106,7 @@ $(document).ready(function() {
     CloneDestroy = (function() {
       CloneDestroy.instance_count = 0;
       function CloneDestroy() { CloneDestroy.instance_count++; }
-      CloneDestroy.parseJSON = function(obj) {
+      CloneDestroy.fromJSON = function(obj) {
         if (obj._type!='CloneDestroy') return null;
         return new CloneDestroy();
       };
@@ -132,7 +132,7 @@ $(document).ready(function() {
     RetainRelease = (function() {
       RetainRelease.retain_count = 0;
       function RetainRelease() { RetainRelease.retain_count++; }
-      RetainRelease.parseJSON = function(obj) {
+      RetainRelease.fromJSON = function(obj) {
         if (obj._type!='RetainRelease') return null;
         return new RetainRelease();
       };

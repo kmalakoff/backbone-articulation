@@ -15,12 +15,12 @@ Backbone-Articulation.js enhances Backbone.js model attributes with object seria
   d) plain old JSON (with no custom serialization)
 
 2) Choose a serialization/deserialization strategy
-  a) using toJSON() instance method and parseJSON class or factory method
+  a) using toJSON() instance method and fromJSON class or factory method
   b) plain old JSON (with no custom serialization)
 
 If you choose 2a) - take a look at the examples below and:
--> implement a toJSON() serialization method which returns plain old JSON. Include a _type attribute in the JSON which is used to find the corresponding parseJSON() class or factory method.
--> implement a parseJSON() class or factory method that is used to articulation your attributes as objects. Note: your parseJSON method should be in the Javscript global namespace, but Backbone-Articulation.js will traverse nested namespaces as needed to find it (see example 2).
+-> implement a toJSON() serialization method which returns plain old JSON. Include a _type attribute in the JSON which is used to find the corresponding fromJSON() class or factory method.
+-> implement a fromJSON() class or factory method that is used to articulation your attributes as objects. Note: your fromJSON method should be in the Javscript global namespace, but Backbone-Articulation.js will traverse nested namespaces as needed to find it (see example 2).
 
 
 # To use it
@@ -62,7 +62,7 @@ Date.prototype.toJSON = function() {
   };
 };
 
-Date.parseJSON = function(obj) {
+Date.fromJSON = function(obj) {
   if (obj._type!='Date') return null;
   return new Date(Date.UTC(obj.year, obj.month, obj.day, obj.hours, obj.minutes, obj.seconds))
 };
@@ -86,9 +86,9 @@ SomeNamespace.SomeClass = (function() {
       date_value:this.date_value
     };
   };
-  SomeClass.parseJSON = function(obj) {
+  SomeClass.fromJSON = function(obj) {
     if (obj._type!='SomeNamespace.SomeClass') return null;
-    return new SomeClass(obj.int_value, obj.string_value, Date.parseJSON(obj.date_value));
+    return new SomeClass(obj.int_value, obj.string_value, Date.fromJSON(obj.date_value));
   };
   return SomeClass;
 })();
