@@ -26,11 +26,7 @@ If you choose 2a) - take a look at the examples below and:
 # To use it
 
 1) Just put it after Backbone.js in your Javascript script dependencies (it replaces some build in methods).
-2) Until the modifications are rolled into the main library (please let me know if I need to add any new patches/features in the meantime), you will need to use the modified versions of Backbone:
-  a) Backbone.js (https://github.com/kmalakoff/backbone)
-3) Other dependencies:
-  a) Underscore.js (http://documentcloud.github.com/underscore/)
-  b) Underscore-Awesomer (https://github.com/kmalakoff/underscore-awesomer)
+2) If you are already including Lifecycle.js or JSON-Serialize.js, use backbone-articulation_core.js as it does not bundle those libraries with it.
 
 # Settings
 
@@ -47,28 +43,7 @@ A big thank you to Jeremy Ashkenas and DocumentCloud for making all of this Back
 
 
 ## Examples
-1) Adding serialization to the built-in Javascript Date class (although under normal circumstances you wouldn't want to waste so much space per Date).
-
-````
-Date.prototype.toJSON = function() {
-  return {
-    _type:'Date',
-    year:this.getUTCFullYear(),
-    month:this.getUTCMonth(),
-    day:this.getUTCDate(),
-    hours:this.getUTCHours(),
-    minutes:this.getUTCMinutes(),
-    seconds:this.getUTCSeconds()
-  };
-};
-
-Date.fromJSON = function(obj) {
-  if (obj._type!='Date') return null;
-  return new Date(Date.UTC(obj.year, obj.month, obj.day, obj.hours, obj.minutes, obj.seconds))
-};
-````
-
-2) Creating custom serialization for one of your classes.
+1) Creating custom serialization for one of your classes.
 
 ````
 window.SomeNamespace || (window.SomeNamespace = {});
@@ -83,30 +58,13 @@ SomeNamespace.SomeClass = (function() {
       _type:'SomeNamespace.SomeClass',
       int_value:this.int_value,
       string_value:this.string_value,
-      date_value:this.date_value
+      date_value:JSON.serialize(this.date_value)
     };
   };
   SomeClass.fromJSON = function(obj) {
     if (obj._type!='SomeNamespace.SomeClass') return null;
-    return new SomeClass(obj.int_value, obj.string_value, Date.fromJSON(obj.date_value));
+    return new SomeClass(obj.int_value, obj.string_value, JSON.deserialize(obj.date_value));
   };
   return SomeClass;
 })();
 ````
-
-## Known Backbone.Relational Memory Leak
-
-I love Backbone and Backbone.relational, but memory management like this was not planned for. Backbone.Models are not reference counted so there is no way to indicate when you are done with them and Backbone.relational caches related models to reuse them. This means that their lifecycle is let's say:
-
-````
-var backbone_model_lifecycle = void 0; // undefined
-````
-
-I added a check in my backbone patch, added a new test (see test/relational.js), pinged the author of Backbone.Relational to discuss what should be done. The patch basically doesn't clean up model attributes (potentially creating memory leaks) if Backbone.Relational is defined (in Backbone.Collection._reset()):
-
-````
-// Backbone.Relational resues models so even though this lifecycle is over, it may live on. Or at least it will consume memory
-if (!Backbone.Relational && this.models && this.models.length) { _.each(this.models, function(model) { model.clear({silent: true}); }); }
-}
-````
-I'll keep you posted.

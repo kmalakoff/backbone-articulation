@@ -5,8 +5,8 @@
   "keywords"      : ["backbone", "backbone.js", "backbone-articulation",  "backbone-articulation.js"],
   "author"        : "Kevin Malakoff <xmann.intl@gmail.com>",
   "contributors"  : [],
-  "dependencies"  : [],
+  "dependencies"  : ['backbone.js', 'underscore.js', 'json-serialize.js', 'lifecycle.js'],
   "repository"    : {"type": "git", "url": "git://github.com/kmalakoff/backbone-articulation.git"},
   "main"          : "backbone-articulation.js",
-  "version"       : "0.2.0"
+  "version"       : "0.3.0"
 }

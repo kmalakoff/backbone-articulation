@@ -45,11 +45,11 @@ $(document).ready(function() {
     }
 
     collection.add(collection.parse(models_as_JSON));
-    ok(collection.models.length===3, '3 models');
-    ok(CloneDestroy.instance_count===3*(collection.models.length*2), '3 models with three instances in their attributes and previous attributes');
+    equal(collection.models.length, 3, '3 models');
+    equal(CloneDestroy.instance_count, 3*(collection.models.length*2), '3 models with three instances in their attributes and previous attributes');
 
     collection.reset();
-    ok(CloneDestroy.instance_count===0, '0 models with zero instances');
+    equal(CloneDestroy.instance_count, 0, '0 models with zero instances');
   });
 
   test("Collection: deserialize", function() {
@@ -59,17 +59,17 @@ $(document).ready(function() {
     collection.add(new Backbone.Model({id: 1, attr1: new CloneDestroy(), attr2: new CloneDestroy(), attr3: new CloneDestroy()}))
     collection.add(new Backbone.Model({id: 2, attr1: new CloneDestroy(), attr2: new CloneDestroy(), attr3: new CloneDestroy()}))
 
-    ok(collection.models.length===3, '3 models');
-    ok(CloneDestroy.instance_count===3*(collection.models.length*2), '3 models with three instances in their attributes and previous attributes');
+    equal(collection.models.length, 3, '3 models');
+    equal(CloneDestroy.instance_count, 3*(collection.models.length*2), '3 models with three instances in their attributes and previous attributes');
 
     var models_as_JSON = collection.toJSON(); models_as_JSON.shift();
     var collection2 = new Backbone.Collection();
     collection2.add(collection2.parse(models_as_JSON));
-    ok(collection2.models.length===2, '2 models');
-    ok(CloneDestroy.instance_count===3*2*(collection.models.length+collection2.models.length), '5 models with three instances in their attributes and previous attributes');
+    equal(collection2.models.length, 2, '2 models');
+    equal(CloneDestroy.instance_count, 3*2*(collection.models.length+collection2.models.length), '5 models with three instances in their attributes and previous attributes');
 
     collection.reset(); collection2.reset();
-    ok(CloneDestroy.instance_count===0, '0 models with zero instances');
+    equal(CloneDestroy.instance_count, 0, '0 models with zero instances');
   });
 
   test("Collection: type from model prototype", function() {
@@ -82,7 +82,7 @@ $(document).ready(function() {
 
   test("Collection: Backbone.Articulation.TYPE_UNDERSCORE_SINGULARIZE", function() {
     Backbone.Articulation.TYPE_UNDERSCORE_SINGULARIZE = true;
-    _.FROM_JSON_TYPE_FIELD = "type";
+    JSON.deserialize.TYPE_FIELD = "type";
 
     var collection = new Backbone.Collection();
     collection.add(new SomeModel({id: 0, attr1: new CloneDestroy(), attr2: new CloneDestroy(), attr3: new CloneDestroy()}))
@@ -98,6 +98,6 @@ $(document).ready(function() {
 
     // return to defaults
     Backbone.Articulation.TYPE_UNDERSCORE_SINGULARIZE = false;
-    _.FROM_JSON_TYPE_FIELD = "_type";
+    JSON.deserialize.TYPE_FIELD = "_type";
   });
 });

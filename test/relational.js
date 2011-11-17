@@ -68,13 +68,11 @@ $(document).ready(function() {
     }
 
     collection.add(collection.parse(models_as_JSON));
-    ok(collection.models.length===3, '3 models');
-    ok(CloneDestroy.instance_count===3*(collection.models.length*2), '3 models with three instances in their attributes and previous attributes');
+    equal(collection.models.length, 3, '3 models');
+    equal(CloneDestroy.instance_count, 3*(collection.models.length*2), '3 models with three instances in their attributes and previous attributes');
     collection.reset();
 
-    // NOTE: KNOWN MEMORY LEAK (BY DESIGN) DUE TO MODEL SHARING in Backbone.relational
-    // ok(CloneDestroy.instance_count===0, '0 models with zero instances');
-    ok(CloneDestroy.instance_count===3*(3*2), '3 models with three instances in their attributes and previous attributes');
+    equal(CloneDestroy.instance_count, 0, '0 models with zero instances');
   });
 
   test("Collection: deserialize", function() {
@@ -84,19 +82,17 @@ $(document).ready(function() {
     collection.add(new Backbone.Model({id: 1, attr1: new CloneDestroy(), attr2: new CloneDestroy(), attr3: new CloneDestroy()}))
     collection.add(new Backbone.Model({id: 2, attr1: new CloneDestroy(), attr2: new CloneDestroy(), attr3: new CloneDestroy()}))
 
-    ok(collection.models.length===3, '3 models');
-    ok(CloneDestroy.instance_count===3*(collection.models.length*2), '3 models with three instances in their attributes and previous attributes');
+    equal(collection.models.length, 3, '3 models');
+    equal(CloneDestroy.instance_count, 3*(collection.models.length*2), '3 models with three instances in their attributes and previous attributes');
 
     var models_as_JSON = collection.toJSON(); models_as_JSON.shift();
     var collection2 = new Backbone.Collection();
     collection2.add(collection2.parse(models_as_JSON));
-    ok(collection2.models.length===2, '2 models');
-    ok(CloneDestroy.instance_count===3*2*(collection.models.length+collection2.models.length), '5 models with three instances in their attributes and previous attributes');
+    equal(collection2.models.length, 2, '2 models');
+    equal(CloneDestroy.instance_count, 3*2*(collection.models.length+collection2.models.length), '5 models with three instances in their attributes and previous attributes');
 
     collection.reset(); collection2.reset();
 
-    // NOTE: KNOWN MEMORY LEAK (BY DESIGN) DUE TO MODEL SHARING in Backbone.relational
-    // ok(CloneDestroy.instance_count===0, '0 models with zero instances');
-    ok(CloneDestroy.instance_count===3*2*(3+2), '5 models with three instances in their attributes and previous attributes');
+    equal(CloneDestroy.instance_count, 0, '0 models with zero instances');
   });
 });
