@@ -46,7 +46,7 @@ Then if you put an instance in your model's attributes, it automatically gets se
 
 ```coffeescript
 instance = new Backbone.Model({id: 'spiffy'});
-instance.save({embedded_some_class: new SomeNamespace.SomeClass()})
+instance.save({embedded_some_class: new SomeNamespace.SomeClass(1, 'two', new Date())})
 
 instance2 = new Backbone.Model({id: 'spiffy'});
 instance2.fetch({
@@ -62,7 +62,7 @@ instance2.fetch({
   c) new() only and using Javascript's garbage collection
   d) plain old JSON (with no custom serialization)
 
-**You can use heterogenous lifecycles paradigms in the same model for your attributes and even embed Backbone models in your attributes!**
+**Note: You can use heterogenous lifecycles paradigms in the same model's attributes and even embed Backbone models in your attributes (by adding type attribute)!**
 
 * see [Lifecycle.js][0] for more details.
 
@@ -70,7 +70,7 @@ instance2.fetch({
   a) using toJSON() instance method and fromJSON class or factory method
   b) plain old JSON (with no custom serialization)
 
-* see [JSON-Serialize.js][1] for more details.
+* see [JSON-Serialize.js][1] for more details **and library options**. 
 
 [0]: https://github.com/kmalakoff/lifecycle
 [1]: https://github.com/kmalakoff/json-serialize
