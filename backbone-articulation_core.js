@@ -11,7 +11,7 @@ if (!Backbone) alert("Missing Backbone.js");
 
 // JSON-Serialize.js (JSON.serialize, JSON.deserialize).
 if (!JSON.SERIALIZE_VERSION) alert("Missing json-serialize.js");
-if (JSON.SERIALIZE_VERSION!=='1.0.0') alert("json-serialize.js needs to be at version 1.0.0 or higher");
+if (JSON.SERIALIZE_VERSION!=='1.1.0') alert("json-serialize.js needs to be at version 1.0.0 or higher");
 
 // Lifecycle.js (LC.own, LC.disown).
 if (!LC) alert("Missing lifecycle.js");
