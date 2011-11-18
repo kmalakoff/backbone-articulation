@@ -16,6 +16,15 @@ You can get the minimal library (not bundled) here:
 * Development version: https://github.com/kmalakoff/backbone-articulation/raw/master/backbone-articulation_core.js
 * Production version: https://github.com/kmalakoff/backbone-articulation/raw/master/backbone-articulation_core.min.js
 
+### Dependencies
+
+Due to monkey patching, you must include the dependencies in this order:
+
+1. Backbone
+2. Backbone.Relational (if you use it)
+3. Backbone.Articulation
+
+
 Examples
 --------
 
