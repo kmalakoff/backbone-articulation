@@ -3,13 +3,27 @@ require 'closure-compiler'
 PROJECT_ROOT = File.expand_path('..', __FILE__)
 
 HEADER = /((^\s*\/\/.*\n)+)/
-def minimize_with_header(source_filename, destination_filename)
+def minimize(source_filename, destination_filename)
   source  = File.read(source_filename)
-  header  = source.match(HEADER)
   min     = Closure::Compiler.new.compress(source)
   File.open(destination_filename, 'w') do |file|
-    file.write header[1].squeeze(' ') + min
+    file.write min
   end
+end
+
+def transfer_header(source_filename, destination_filename)
+  source      = File.read(source_filename)
+  comment_block = source.match(HEADER)
+  return if not comment_block
+  destination = File.read(destination_filename)
+  File.open(destination_filename, 'w+') do |file|
+    file.write comment_block[1].squeeze(' ') + destination
+  end
+end
+
+def minimize_with_header(source_filename, destination_filename)
+  minimize(source_filename, destination_filename)
+  transfer_header(source_filename, destination_filename)
 end
 
 # Check for the existence of an executable.
@@ -39,7 +53,9 @@ task :package do
     system 'docco backbone-articulation_core.js'
     fork { exec "jammit -c config/assets.yaml -o #{PROJECT_ROOT}" }
     Process.waitall
-    minimize_with_header('backbone-articulation.js', 'backbone-articulation.min.js')
+    minimize('backbone-articulation.js', 'backbone-articulation.min.js')
+    ['dependencies/bundled/lifecycle.js', 'dependencies/bundled/json-serialize.js', 'backbone-articulation_core.js'].each{|value| transfer_header(value, 'backbone-articulation.min.js')}
+    transfer_header('backbone-articulation_core.js', 'backbone-articulation.js')
   end
 end
 

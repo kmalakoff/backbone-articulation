@@ -1,6 +1,7 @@
 //     Backbone-Articulation.js 0.3.0
 //     (c) 2011 Kevin Malakoff.
 //     Backbone-Articulation may be freely distributed under the MIT license.
+//
 
 (function() {
 

@@ -3,6 +3,6 @@ compress_assets: off
 
 javascripts:
   'backbone-articulation':
-    - dependencies/json-serialize.js
-    - dependencies/lifecycle.js
+    - dependencies/bundled/json-serialize.js
+    - dependencies/bundled/lifecycle.js
     - backbone-articulation_core.js
