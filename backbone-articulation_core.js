@@ -169,7 +169,7 @@ var _native_bbcol_reset = Backbone.Collection.prototype._reset;
 Backbone.Collection.prototype._reset = function() {
   // memory clean up
   if (this.models && this.models.length) {
-    if (Backbone.Relational) {
+    if (Backbone.Relational && (this.models[0] instanceof Backbone.RelationalModel)) {
       _.each(this.models, function(model) { Backbone.Relational.store.unregister(model); model.clear({silent: true}); });
     }
     else {
