@@ -14,9 +14,9 @@
 
 
 (function() {
-  var LC, Lifecycle, copyProps, isArray;
+  var LC, copyProps, isArray;
 
-  LC = Lifecycle = this.LC = this.Lifecycle = typeof exports !== 'undefined' ? exports : {};
+  LC = this.LC = typeof exports !== 'undefined' ? exports : {};
 
   LC.VERSION = "1.0.1";
 
