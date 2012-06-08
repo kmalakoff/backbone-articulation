@@ -1,4 +1,4 @@
-//     Backbone.js 0.5.3
+//     Backbone.js 0.5.0
 //     (c) 2010 Jeremy Ashkenas, DocumentCloud Inc.
 //     Backbone may be freely distributed under the MIT license.
 //     For all details and documentation:
@@ -25,11 +25,11 @@
   }
 
   // Current version of the library. Keep in sync with `package.json`.
-  Backbone.VERSION = '0.5.3';
+  Backbone.VERSION = '0.5.0';
 
   // Require Underscore, if we're on the server, and it's not already present.
   var _ = root._;
-  if (!_ && (typeof require !== 'undefined')) _ = require('underscore')._;
+  if (!_ && (typeof require !== 'undefined')) _ = require('underscore')._._;
 
   // For Backbone's purposes, jQuery or Zepto owns the `$` variable.
   var $ = root.jQuery || root.Zepto;
@@ -41,7 +41,7 @@
     return this;
   };
 
-  // Turn on `emulateHTTP` to support legacy HTTP servers. Setting this option will
+  // Turn on `emulateHTTP` to use support legacy HTTP servers. Setting this option will
   // fake `"PUT"` and `"DELETE"` requests via the `_method` parameter and set a
   // `X-Http-Method-Override` header.
   Backbone.emulateHTTP = false;
@@ -68,10 +68,10 @@
 
     // Bind an event, specified by a string name, `ev`, to a `callback` function.
     // Passing `"all"` will bind the callback to all events fired.
-    bind : function(ev, callback, context) {
+    bind : function(ev, callback) {
       var calls = this._callbacks || (this._callbacks = {});
       var list  = calls[ev] || (calls[ev] = []);
-      list.push([callback, context]);
+      list.push(callback);
       return this;
     },
 
@@ -89,7 +89,7 @@
           var list = calls[ev];
           if (!list) return this;
           for (var i = 0, l = list.length; i < l; i++) {
-            if (list[i] && callback === list[i][0]) {
+            if (callback === list[i]) {
               list[i] = null;
               break;
             }
@@ -114,7 +114,7 @@
               list.splice(i, 1); i--; l--;
             } else {
               args = both ? Array.prototype.slice.call(arguments, 1) : arguments;
-              callback[0].apply(callback[1] || this, args);
+              callback.apply(this, args);
             }
           }
         }
@@ -133,7 +133,7 @@
     var defaults;
     attributes || (attributes = {});
     if (defaults = this.defaults) {
-      if (_.isFunction(defaults)) defaults = defaults.call(this);
+      if (_.isFunction(defaults)) defaults = defaults();
       attributes = _.extend({}, defaults, attributes);
     }
     this.attributes = {};
@@ -143,7 +143,7 @@
     this._changed = false;
     this._previousAttributes = _.clone(this.attributes);
     if (options && options.collection) this.collection = options.collection;
-    this.initialize(attributes, options);
+    this.initialize.apply(this, arguments);
   };
 
   // Attach all inheritable methods to the Model prototype.
@@ -582,7 +582,7 @@
       options || (options = {});
       model = this._prepareModel(model, options);
       if (!model) return false;
-      var already = this.getByCid(model);
+      var already = this.getByCid(model) || this.get(model);
       if (already) throw new Error(["Can't add the same model to a set twice", already.id]);
       this._byId[model.id] = model;
       this._byCid[model.cid] = model;
@@ -640,8 +640,8 @@
   // Underscore methods that we want to implement on the Collection.
   var methods = ['forEach', 'each', 'map', 'reduce', 'reduceRight', 'find', 'detect',
     'filter', 'select', 'reject', 'every', 'all', 'some', 'any', 'include',
-    'contains', 'invoke', 'max', 'min', 'sortBy', 'sortedIndex', 'toArray', 'size',
-    'first', 'rest', 'last', 'without', 'indexOf', 'lastIndexOf', 'isEmpty', 'groupBy'];
+    'invoke', 'max', 'min', 'sortBy', 'sortedIndex', 'toArray', 'size',
+    'first', 'rest', 'last', 'without', 'indexOf', 'lastIndexOf', 'isEmpty'];
 
   // Mix in each Underscore method as a proxy to `Collection#models`.
   _.each(methods, function(method) {
@@ -738,7 +738,7 @@
   };
 
   // Cached regex for cleaning hashes.
-  var hashStrip = /^#*/;
+  var hashStrip = /^#*!?/;
 
   // Cached regex for detecting MSIE.
   var isExplorer = /msie [\w.]+/;
@@ -766,7 +766,7 @@
           fragment = window.location.hash;
         }
       }
-      return decodeURIComponent(fragment.replace(hashStrip, ''));
+      return fragment.replace(hashStrip, '');
     },
 
     // Start the hash change handling, returning `true` if the current URL matches
@@ -801,20 +801,15 @@
       // opened by a non-pushState browser.
       this.fragment = fragment;
       historyStarted = true;
-      var loc = window.location;
-      var atRoot  = loc.pathname == this.options.root;
+      var started = this.loadUrl() || this.loadUrl(window.location.hash);
+      var atRoot  = window.location.pathname == this.options.root;
       if (this._wantsPushState && !this._hasPushState && !atRoot) {
         this.fragment = this.getFragment(null, true);
-        window.location.replace(this.options.root + '#' + this.fragment);
-        // Return immediately as browser will do redirect to new url
-        return true;
-      } else if (this._wantsPushState && this._hasPushState && atRoot && loc.hash) {
-        this.fragment = loc.hash.replace(hashStrip, '');
-        window.history.replaceState({}, document.title, loc.protocol + '//' + loc.host + this.options.root + this.fragment);
-      }
-
-      if (!this.options.silent) {
-        return this.loadUrl();
+        window.location = this.options.root + '#' + this.fragment;
+      } else if (this._wantsPushState && this._hasPushState && atRoot && window.location.hash) {
+        this.navigate(window.location.hash);
+      } else {
+        return started;
       }
     },
 
@@ -852,18 +847,18 @@
     // URL-encoding the fragment in advance. This does not trigger
     // a `hashchange` event.
     navigate : function(fragment, triggerRoute) {
-      var frag = (fragment || '').replace(hashStrip, '');
-      if (this.fragment == frag || this.fragment == decodeURIComponent(frag)) return;
+      fragment = (fragment || '').replace(hashStrip, '');
+      if (this.fragment == fragment || this.fragment == decodeURIComponent(fragment)) return;
       if (this._hasPushState) {
         var loc = window.location;
-        if (frag.indexOf(this.options.root) != 0) frag = this.options.root + frag;
-        this.fragment = frag;
-        window.history.pushState({}, document.title, loc.protocol + '//' + loc.host + frag);
+        if (fragment.indexOf(this.options.root) != 0) fragment = this.options.root + fragment;
+        this.fragment = fragment;
+        window.history.pushState({}, document.title, loc.protocol + '//' + loc.host + fragment);
       } else {
-        window.location.hash = this.fragment = frag;
-        if (this.iframe && (frag != this.getFragment(this.iframe.location.hash))) {
+        window.location.hash = this.fragment = fragment;
+        if (this.iframe && (fragment != this.getFragment(this.iframe.location.hash))) {
           this.iframe.document.open().close();
-          this.iframe.location.hash = frag;
+          this.iframe.location.hash = fragment;
         }
       }
       if (triggerRoute) this.loadUrl(fragment);
@@ -952,7 +947,6 @@
     // not `change`, `submit`, and `reset` in Internet Explorer.
     delegateEvents : function(events) {
       if (!(events || (events = this.events))) return;
-      if (_.isFunction(events)) events = events.call(this);
       $(this.el).unbind('.delegateEvents' + this.cid);
       for (var key in events) {
         var method = this[events[key]];
@@ -1041,7 +1035,8 @@
     // Default JSON-request options.
     var params = _.extend({
       type:         type,
-      dataType:     'json'
+      dataType:     'json',
+      processData:  false
     }, options);
 
     // Ensure that we have a URL.
@@ -1058,6 +1053,7 @@
     // For older servers, emulate JSON by encoding the request into an HTML-form.
     if (Backbone.emulateJSON) {
       params.contentType = 'application/x-www-form-urlencoded';
+      params.processData = true;
       params.data        = params.data ? {model : params.data} : {};
     }
 
@@ -1071,11 +1067,6 @@
           xhr.setRequestHeader('X-HTTP-Method-Override', type);
         };
       }
-    }
-
-    // Don't process data on a non-GET request.
-    if (params.type !== 'GET' && !Backbone.emulateJSON) {
-      params.processData = false;
     }
 
     // Make the request.
@@ -1152,7 +1143,7 @@
 
   // Helper function to escape a string for HTML rendering.
   var escapeHTML = function(string) {
-    return string.replace(/&(?!\w+;|#\d+;|#x[\da-f]+;)/gi, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;').replace(/\//g,'&#x2F;');
+    return string.replace(/&(?!\w+;|#\d+;|#x[\da-f]+;)/gi, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27').replace(/\//g,'&#x2F;');
   };
 
 }).call(this);

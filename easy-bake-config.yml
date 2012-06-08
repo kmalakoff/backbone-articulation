@@ -1,0 +1,32 @@
+library_core:
+  join: backbone-articulation.js
+  compress: true
+  directories:
+    - src
+
+tests:
+  output: ./build
+  directories:
+    - test/core
+    - test/backbone-relational
+    - test/packaging
+  options:
+    test:
+      command: phantomjs
+      runner: phantomjs-qunit-runner.js
+    build:
+      no_files_ok: ['test/core', 'test/packaging', 'test/backbone-relational']
+
+postinstall:
+  copy_latest_underscore:
+    command: 'cp'
+    args: ['node_modules/underscore/underscore.js', 'vendor/underscore-latest.js']
+  copy_latest_backbone:
+    command: 'cp'
+    args: ['node_modules/backbone/backbone.js', 'vendor/backbone-latest.js']
+  copy_latest_json_serialize:
+    command: 'cp'
+    args: ['node_modules/json-serialize/json-serialize.js', 'vendor/json-serialize-latest.js']
+  copy_latest_lifecycle:
+    command: 'cp'
+    args: ['node_modules/lifecycle/lifecycle.js', 'vendor/lifecycle-latest.js']

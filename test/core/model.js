@@ -1,6 +1,18 @@
+//////////////////////////////
+// Start Tests
+//////////////////////////////
 $(document).ready(function() {
 
   module("Backbone.Model");
+
+  // import Backbone, Articulation, and JSON-Serialize.js
+  var Backbone = !window.Backbone && (typeof require !== 'undefined') ? require('backbone') : window.Backbone;
+  var Articulation = (typeof require !== 'undefined') ? require('backbone-articulation') : Backbone.Articulation
+  var JSONS = !window.JSONS && (typeof require !== 'undefined') ? require('json-serialize') : window.JSONS;
+  var _ = !window._ && (typeof require !== 'undefined') ? require('underscore')._ : window._;
+  test("TEST DEPENDENCY MISSING", function() {
+    ok(!!Backbone); ok(!!Articulation); ok(!!JSONS); ok(!!_);
+  });
 
   Date.prototype.isEqual = function(that) { return (this.valueOf() == that.valueOf()) };
 
@@ -16,12 +28,12 @@ $(document).ready(function() {
         _type:'SomeNamespace.SomeClass',
         int_value:this.int_value,
         string_value:this.string_value,
-        date_value:JSON.serialize(this.date_value)
+        date_value:JSONS.serialize(this.date_value)
       };
     };
     SomeClass.fromJSON = function(obj) {
       if (obj._type!='SomeNamespace.SomeClass') return null;
-      return new SomeClass(obj.int_value, obj.string_value, JSON.deserialize(obj.date_value));
+      return new SomeClass(obj.int_value, obj.string_value, JSONS.deserialize(obj.date_value));
     };
     SomeClass.prototype.isEqual = function(that) {
       if (!that) return false;
@@ -45,7 +57,7 @@ $(document).ready(function() {
       _type         : 'SomeNamespace.SomeClass',
       int_value     : int_value,
       string_value  : string_value,
-      date_value    : JSON.serialize(date_value)
+      date_value    : JSONS.serialize(date_value)
     }
   };
 
@@ -58,7 +70,7 @@ $(document).ready(function() {
     ok(result instanceof SomeNamespace.SomeClass, 'SomeNamespace.SomeClass deserialized as a class');
     ok(_.isEqual(result.toJSON(), attrs.a_class), 'SomeNamespace.SomeClass deserialized correctly');
     ok(result.date_value instanceof Date, 'SomeNamespace.SomeClass date_value deserialized as a Date');
-    ok(_.isEqual(JSON.serialize(result.date_value), attrs.a_class.date_value), 'SomeNamespace.SomeClass date_value deserialized correctly');
+    ok(_.isEqual(JSONS.serialize(result.date_value), attrs.a_class.date_value), 'SomeNamespace.SomeClass date_value deserialized correctly');
   });
 
   test("Model: serialize to JSON", function() {
@@ -108,8 +120,8 @@ $(document).ready(function() {
         if (obj._type!='RetainRelease') return null;
         return new RetainRelease();
       };
-      RetainRelease.prototype.retain = function() { RetainRelease.retain_count++; };
-      RetainRelease.prototype.release = function() { RetainRelease.retain_count--; };
+      RetainRelease.prototype.retain = function() { RetainRelease.retain_count++; return this; };
+      RetainRelease.prototype.release = function() { RetainRelease.retain_count--; return this; };
       return RetainRelease;
     })();
 

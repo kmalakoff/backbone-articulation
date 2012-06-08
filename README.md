@@ -6,24 +6,30 @@
 
 Backbone-Articulation.js enhances Backbone.js model attributes with object serialization and deserialization.
 
-You can get the library pre-bundled with Lifecycle.js and JSON-Serialize here:
+You can get the library here:
 
-* Development version: https://github.com/kmalakoff/backbone-articulation/raw/master/backbone-articulation.js
-* Production version: https://github.com/kmalakoff/backbone-articulation/raw/master/backbone-articulation.min.js
-
-You can get the minimal library (not bundled) here:
-
-* Development version: https://github.com/kmalakoff/backbone-articulation/raw/master/backbone-articulation_core.js
-* Production version: https://github.com/kmalakoff/backbone-articulation/raw/master/backbone-articulation_core.min.js
+* [Development version][1]
+* [Production version][2]
 
 ### Dependencies
+
+* [Backbone.js][3]
+* [Underscore.js][4]
+* [JSON-Serialize.js][5]
+* [Lifecycle.js][6]
+
+[1]: https://github.com/kmalakoff/backbone-articulation/raw/master/backbone-articulation_core.js
+[2]: https://github.com/kmalakoff/backbone-articulation/raw/master/backbone-articulation_core.min.js
+[3]: http://backbonejs.org/
+[4]: http://underscorejs.org/
+[5]: https://github.com/kmalakoff/json-serialize
+[6]: https://github.com/kmalakoff/lifecycle
 
 Due to monkey patching, you must include the dependencies in this order:
 
 1. Backbone
 2. Backbone.Relational (if you use it)
 3. Backbone.Articulation
-
 
 Examples
 --------
@@ -42,12 +48,12 @@ class SomeClass
       _type:'SomeClass',
       int_value:this.int_value,
       string_value:this.string_value,
-      date_value:JSON.serialize(this.date_value)
+      date_value:JSONS.serialize(this.date_value)
     }
 
   @fromJSON: (json) ->    # note: this is a class method
     if (json._type!='SomeClass') return null;
-    return new SomeClass(json.int_value, json.string_value, JSON.deserialize(json.date_value));
+    return new SomeClass(json.int_value, json.string_value, JSONS.deserialize(json.date_value));
 ```
 
 Then if you put an instance in your model's attributes, it automatically gets serialized and deserialized for you:
@@ -78,7 +84,7 @@ instance2.fetch({
   a) using toJSON() instance method and fromJSON class or factory method
   b) plain old JSON (with no custom serialization)
 
-* see [JSON-Serialize.js][1] for more details **and library options**. 
+* see [JSON-Serialize.js][1] for more details **and library options**.
 
 [0]: https://github.com/kmalakoff/lifecycle
 [1]: https://github.com/kmalakoff/json-serialize
@@ -106,3 +112,30 @@ Backbone.Articulation.TYPE_UNDERSCORE_SINGULARIZE = true;
 That's it! Go crazy!
 
 A big thank you to Jeremy Ashkenas and DocumentCloud for making all of this Backbone awesomeness possible.
+
+# Release Notes
+
+###0.3.1
+
+- converted back to CoffeeScript
+
+- build using easy-bake
+
+- added packaging test
+
+- renamed 'backbone-articulation_core.js' to 'backbone-articulation.js'
+
+- removed the bundled version of backbone-articulation (now you must include JSON-Serialize.js and Lifecycle.js manually (see above)
+
+
+Building, Running and Testing the library
+-----------------------
+
+###Installing:
+
+1. install node.js: http://nodejs.org
+2. install node packages: 'npm install'
+
+###Commands:
+
+Look at: https://github.com/kmalakoff/easy-bake

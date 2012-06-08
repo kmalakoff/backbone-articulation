@@ -1,8 +1,0 @@
-gzip_assets: off
-compress_assets: off
-
-javascripts:
-  'backbone-articulation':
-    - dependencies/bundled/json-serialize.js
-    - dependencies/bundled/lifecycle.js
-    - backbone-articulation_core.js
