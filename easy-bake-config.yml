@@ -1,21 +1,20 @@
 library_core:
   join: backbone-articulation.js
   compress: true
-  directories:
-    - src
+  files:
+    - src/**/*.coffee
 
 tests:
-  output: ./build
-  directories:
-    - test/core
-    - test/backbone-relational
-    - test/packaging
   options:
     test:
       command: phantomjs
       runner: phantomjs-qunit-runner.js
-    build:
-      no_files_ok: ['test/core', 'test/packaging', 'test/backbone-relational']
+      directories:
+        - test/core
+        - test/backbone-relational
+        - test/packaging
+      files:
+        - '**/*.html'
 
 postinstall:
   copy_latest_underscore:
