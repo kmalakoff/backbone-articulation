@@ -5,27 +5,36 @@ library_core:
     - src/**/*.coffee
 
 tests:
-  options:
+  output: build
+  directories:
+    - test/core
+    - test/backbone-relational
+    - test/packaging
+  modes:
+    build:
+      bundles:
+        test/packaging/build/bundle-latest.js:
+          underscore: underscore
+          backbone: backbone
+          json-serialize: json-serialize
+          lifecycle: lifecycle
+          backbone-articulation: backbone-articulation.js
+        test/packaging/build/bundle-legacy.js:
+          underscore: vendor/underscore-1.0.3.js
+          backbone: vendor/backbone-0.5.1.js
+          json-serialize: json-serialize
+          lifecycle: lifecycle
+          backbone-articulation: backbone-articulation.js
+      no_files_ok: ['test/packaging']
     test:
       command: phantomjs
       runner: phantomjs-qunit-runner.js
-      directories:
-        - test/core
-        - test/backbone-relational
-        - test/packaging
       files:
         - '**/*.html'
 
 postinstall:
-  copy_latest_underscore:
-    command: 'cp'
-    args: ['underscore', 'vendor/underscore-latest.js']
-  copy_latest_backbone:
-    command: 'cp'
-    args: ['backbone', 'vendor/backbone-latest.js']
-  copy_latest_json_serialize:
-    command: 'cp'
-    args: ['json-serialize', 'vendor/json-serialize-latest.js']
-  copy_latest_lifecycle:
-    command: 'cp'
-    args: ['lifecycle', 'vendor/lifecycle-latest.js']
+  commands:
+    - 'cp underscore vendor/underscore-latest.js'
+    - 'cp backbone vendor/backbone-latest.js'
+    - 'cp json-serialize vendor/json-serialize-latest.js'
+    - 'cp lifecycle vendor/lifecycle-latest.js'

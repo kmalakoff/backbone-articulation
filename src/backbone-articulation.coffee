@@ -4,18 +4,19 @@
   Backbone-Articulation may be freely distributed under the MIT license.
   https://github.com/kmalakoff/backbone-articulation
 ###
-root = @
 
 # import Underscore and Backbone
-_ = if not @_ and (typeof(require) != 'undefined') then require('underscore')._ else @_
+_ = if not @_ and (typeof(require) != 'undefined') then require('underscore') else @_
+_ = _._ if _ and not _.VERSION # LEGACY
 Backbone = if not @Backbone and (typeof(require) != 'undefined') then require('backbone') else @Backbone
 
 # import JSON-Serialize.js (JSONS.serialize, JSONS) and Lifecycle.js (LC.own, LC.disown)
 JSONS = if not @JSONS and (typeof(require) != 'undefined') then require('json-serialize') else @JSONS
 LC = if not @LC and (typeof(require) != 'undefined') then require('lifecycle') else @LC
 
+##############################################
 # export or create Backbone.Articulation namespace
-Backbone.Articulation = {}; root.exports = Backbone.Articulation if (typeof(root.exports) != 'undefined')
+Backbone.Articulation = if (typeof(exports) != 'undefined') then exports else {}
 Backbone.Articulation.VERSION = '0.3.1'
 
 # setting - if you set to true, you must provide String.prototype.underscore and String.prototype.singularize (for example, from inflection.js)

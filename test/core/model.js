@@ -9,7 +9,9 @@ $(document).ready(function() {
   var Backbone = !window.Backbone && (typeof require !== 'undefined') ? require('backbone') : window.Backbone;
   var Articulation = (typeof require !== 'undefined') ? require('backbone-articulation') : Backbone.Articulation
   var JSONS = !window.JSONS && (typeof require !== 'undefined') ? require('json-serialize') : window.JSONS;
-  var _ = !window._ && (typeof require !== 'undefined') ? require('underscore')._ : window._;
+  var _ = !window._ && (typeof require !== 'undefined') ? require('underscore') : window._;
+  if (_ && !_.VERSION) {_ = _._;} // LEGACY
+
   test("TEST DEPENDENCY MISSING", function() {
     ok(!!Backbone); ok(!!Articulation); ok(!!JSONS); ok(!!_);
   });

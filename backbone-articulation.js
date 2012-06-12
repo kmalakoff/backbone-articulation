@@ -9,11 +9,13 @@
 
 
 (function() {
-  var Backbone, JSONS, LC, root, _, _native_bbcol_reset, _native_bbmod_change, _native_bbmod_clear, _native_bbmod_initialize, _native_bbmod_model_event, _native_bbmod_set, _native_bbmod_unset;
+  var Backbone, JSONS, LC, _, _native_bbcol_reset, _native_bbmod_change, _native_bbmod_clear, _native_bbmod_initialize, _native_bbmod_model_event, _native_bbmod_set, _native_bbmod_unset;
 
-  root = this;
+  _ = !this._ && (typeof require !== 'undefined') ? require('underscore') : this._;
 
-  _ = !this._ && (typeof require !== 'undefined') ? require('underscore')._ : this._;
+  if (_ && !_.VERSION) {
+    _ = _._;
+  }
 
   Backbone = !this.Backbone && (typeof require !== 'undefined') ? require('backbone') : this.Backbone;
 
@@ -21,11 +23,7 @@
 
   LC = !this.LC && (typeof require !== 'undefined') ? require('lifecycle') : this.LC;
 
-  Backbone.Articulation = {};
-
-  if (typeof root.exports !== 'undefined') {
-    root.exports = Backbone.Articulation;
-  }
+  Backbone.Articulation = typeof exports !== 'undefined' ? exports : {};
 
   Backbone.Articulation.VERSION = '0.3.1';
 
