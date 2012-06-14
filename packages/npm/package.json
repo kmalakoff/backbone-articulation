@@ -1,6 +1,6 @@
 {
   "author"        : {"name": "Kevin Malakoff", "url": "https://github.com/kmalakoff"},
-  "name"          : "backbone-articulation_dev",
+  "name"          : "backbone-articulation",
   "description"   : "Backbone-Articulation.js enhances Backbone.js model attributes with object serialization and deserialization",
   "keywords"      : ["backbone-articulation", "backbone-articulationjs", "backbone", "backbonejs", "backbone-relational", "backbone-rel"],
 
@@ -11,15 +11,9 @@
     "url": "http://github.com/kmalakoff/backbone-articulation.git"
   },
 
-  "scripts": {
-    "preinstall": "npm install coffee-script; npm install easy-bake@0.1.2",
-    "postinstall": "cake postinstall",
-    "test": "cake -c -b test"
-  },
   "optionalDependencies" : {
     "underscore": "latest",
     "backbone": "latest",
-    "backbone-relational": "latest",
     "json-serialize": "latest",
     "lifecycle": "latest"
   },

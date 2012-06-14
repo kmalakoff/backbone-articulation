@@ -3,6 +3,13 @@ library_core:
   compress: true
   files:
     - src/**/*.coffee
+  modes:
+    build:
+      commands:
+        - 'cp backbone-articulation.js packages/npm/backbone-articulation.js'
+        - 'cp backbone-articulation.min.js packages/npm/backbone-articulation.min.js'
+        - 'cp backbone-articulation.js packages/nuget/Content/Scripts/backbone-articulation.js'
+        - 'cp backbone-articulation.min.js packages/nuget/Content/Scripts/backbone-articulation.min.js'
 
 tests:
   output: build
@@ -36,5 +43,6 @@ postinstall:
   commands:
     - 'cp underscore vendor/underscore-latest.js'
     - 'cp backbone vendor/backbone-latest.js'
+    - 'cp backbone-relational vendor/backbone-relational-latest.js'
     - 'cp json-serialize vendor/json-serialize-latest.js'
     - 'cp lifecycle vendor/lifecycle-latest.js'
