@@ -78,16 +78,16 @@ instance2.fetch({
 
 **Note: You can use heterogenous lifecycles paradigms in the same model's attributes and even embed Backbone models in your attributes (by adding type attribute)!**
 
-* see [Lifecycle.js][0] for more details.
+* see [Lifecycle.js][7] for more details.
 
 2) Choose a serialization/deserialization strategy
   a) using toJSON() instance method and fromJSON class or factory method
   b) plain old JSON (with no custom serialization)
 
-* see [JSON-Serialize.js][1] for more details **and library options**.
+* see [JSON-Serialize.js][8] for more details **and library options**.
 
-[0]: https://github.com/kmalakoff/lifecycle
-[1]: https://github.com/kmalakoff/json-serialize
+[7]: https://github.com/kmalakoff/lifecycle
+[8]: https://github.com/kmalakoff/json-serialize
 
 If you choose 2a) - take a look at the examples below and:
 
