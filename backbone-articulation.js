@@ -21,6 +21,8 @@
 
   Backbone = !this.Backbone && (typeof require !== 'undefined') ? require('backbone') : this.Backbone;
 
+  Backbone.Relational = !Backbone.Relational && (typeof require !== 'undefined') ? require('backbone-relational') : Backbone.Relational;
+
   JSONS = !this.JSONS && (typeof require !== 'undefined') ? require('json-serialize') : this.JSONS;
 
   LC = !this.LC && (typeof require !== 'undefined') ? require('lifecycle') : this.LC;
@@ -32,26 +34,26 @@
   Backbone.Articulation.TYPE_UNDERSCORE_SINGULARIZE = false;
 
   Backbone.Articulation._mixin = function(target_constructor, source_constructor, source_fns) {
-    var Link, fn, fns, name, _link_super;
+    var Link, fn, fns, name;
     fns = _.pick(source_constructor.prototype, source_fns);
-    _link_super = target_constructor.__super__.constructor;
     Link = (function(_super) {
 
       __extends(Link, _super);
 
       function Link() {
-        this.__bba_super = _link_super;
-        _.extend(this, fns);
-        Link.__super__.constructor.apply(this, arguments);
+        return Link.__super__.constructor.apply(this, arguments);
       }
 
       return Link;
 
-    })(_link_super);
+    })(target_constructor.__super__.constructor);
     for (name in fns) {
       fn = fns[name];
       Link.prototype[name] = fn;
     }
+    Link.prototype.__bba_super = target_constructor.__super__.constructor;
+    Link.prototype.__bba_toJSON = Link.prototype['toJSON'];
+    target_constructor.prototype.__proto__ = Link.prototype;
     return target_constructor.__super__ = Link.prototype;
   };
 
@@ -275,7 +277,9 @@
           return this.id;
         }
         this.acquire();
-        json = Backbone.Model.prototype.toJSON.call(this);
+        json = this.__bba_toJSON ? this.__bba_toJSON.call(this) : ((function() {
+          throw 'Backbone.Articulation.RelationalModel is not configured correctly';
+        })());
         _ref = this._relations;
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           rel = _ref[_i];
@@ -316,7 +320,7 @@
             Backbone.Relational.store.unregister(model);
           }
         }
-        return this.__bba_super.prototype._reset.apply(this, arguments);
+        return this.constructor.__super__.constructor.__super__._reset.apply(this, arguments);
       }
     });
     Backbone.Articulation.Model.mixin(Backbone.Articulation.RelationalModel);

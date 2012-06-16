@@ -12,12 +12,13 @@ var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, par
 //////////////////////////////
 $(document).ready(function() {
 
-  module("Articulation");
+  module("Backbone.Relational");
 
-  var Backbone = !window.Backbone && (typeof require !== 'undefined') ? require('backbone') : window.Backbone;
+  var Backbone = (typeof require !== 'undefined') ? require('backbone') : window.Backbone;
   Backbone.Articulation = (typeof require !== 'undefined') ? require('backbone-articulation') : Backbone.Articulation
-  var JSONS = !window.JSONS && (typeof require !== 'undefined') ? require('json-serialize') : window.JSONS;
-  var _ = !window._ && (typeof require !== 'undefined') ? require('underscore') : window._;
+  Backbone.Relational = (typeof require !== 'undefined') ? require('backbone-relational') : Backbone.Relational
+  var JSONS = (typeof require !== 'undefined') ? require('json-serialize') : window.JSONS;
+  var _ = (typeof require !== 'undefined') ? require('underscore') : window._;
   if (_ && !_.VERSION) {_ = _._;} // LEGACY
 
   test("TEST DEPENDENCY MISSING", function() {
@@ -40,19 +41,29 @@ $(document).ready(function() {
   })();
 
   test("Self-Referencing Model", function() {
-    var SelfReferencingModel = Backbone.Articulation.RelationalModel.extend({
-      relations: [{
+    var SelfReferencingModel, model, result;
+    SelfReferencingModel = (function(_super) {
+      __extends(SelfReferencingModel, _super);
+
+      function SelfReferencingModel() {
+        return SelfReferencingModel.__super__.constructor.apply(this, arguments);
+      }
+
+      SelfReferencingModel.prototype.relations = [{
         type: Backbone.HasMany,
         key: 'children',
-        relatedModel: this.constructor,
+        relatedModel: SelfReferencingModel,
         includeInJSON: 'id',
         reverseRelation: {
           type: Backbone.HasOne,
           key: 'parent',
           includeInJSON: 'id'
         }
-      }]
-    });
+      }];
+
+      return SelfReferencingModel;
+
+    })(Backbone.Articulation.RelationalModel);
 
     parent_model = new SelfReferencingModel({name: 'parent', id: 'parent1', resource_uri: 'srm'});
     child_model = new SelfReferencingModel({name: 'child', resource_uri: 'srm'});
@@ -83,7 +94,7 @@ $(document).ready(function() {
 
   test("Collection: deserialize", function() {
     CloneDestroy.instance_count=0;
-    var collection = new Backbone.Collection();
+    var collection = new Backbone.Articulation.Collection();
     collection.add(new Backbone.Articulation.RelationalModel({id: 0, attr1: new CloneDestroy(), attr2: new CloneDestroy(), attr3: new CloneDestroy()}))
     collection.add(new Backbone.Articulation.RelationalModel({id: 1, attr1: new CloneDestroy(), attr2: new CloneDestroy(), attr3: new CloneDestroy()}))
     collection.add(new Backbone.Articulation.RelationalModel({id: 2, attr1: new CloneDestroy(), attr2: new CloneDestroy(), attr3: new CloneDestroy()}))
@@ -92,7 +103,7 @@ $(document).ready(function() {
     equal(CloneDestroy.instance_count, 3*(collection.models.length*2), '3 models with three instances in their attributes and previous attributes');
 
     var models_as_JSON = collection.toJSON(); models_as_JSON.shift();
-    var collection2 = new Backbone.Collection();
+    var collection2 = new Backbone.Articulation.Collection();
     collection2.add(collection2.parse(models_as_JSON));
     equal(collection2.models.length, 2, '2 models');
     equal(CloneDestroy.instance_count, 3*2*(collection.models.length+collection2.models.length), '5 models with three instances in their attributes and previous attributes');

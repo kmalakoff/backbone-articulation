@@ -15,10 +15,10 @@ $(document).ready(function() {
   module("Backbone.Articulation.Collection");
 
   // import Backbone, and Articulation
-  var Backbone = !window.Backbone && (typeof require !== 'undefined') ? require('backbone') : window.Backbone;
+  var Backbone = (typeof require !== 'undefined') ? require('backbone') : window.Backbone;
   Backbone.Articulation = (typeof require !== 'undefined') ? require('backbone-articulation') : Backbone.Articulation
-  var JSONS = !window.JSONS && (typeof require !== 'undefined') ? require('json-serialize') : window.JSONS;
-  var _ = !window._ && (typeof require !== 'undefined') ? require('underscore') : window._;
+  var JSONS = (typeof require !== 'undefined') ? require('json-serialize') : window.JSONS;
+  var _ = (typeof require !== 'undefined') ? require('underscore') : window._;
   if (_ && !_.VERSION) {_ = _._;} // LEGACY
 
   test("TEST DEPENDENCY MISSING", function() {

@@ -9,6 +9,7 @@
 _ = if not @_ and (typeof(require) != 'undefined') then require('underscore') else @_
 _ = _._ if _ and not _.VERSION # LEGACY
 Backbone = if not @Backbone and (typeof(require) != 'undefined') then require('backbone') else @Backbone
+Backbone.Relational = if not Backbone.Relational and (typeof(require) != 'undefined') then require('backbone-relational') else Backbone.Relational
 
 # import JSON-Serialize.js (JSONS.serialize, JSONS) and Lifecycle.js (LC.own, LC.disown)
 JSONS = if not @JSONS and (typeof(require) != 'undefined') then require('json-serialize') else @JSONS
@@ -27,17 +28,15 @@ Backbone.Articulation._mixin = (target_constructor, source_constructor, source_f
   fns = _.pick(source_constructor.prototype, source_fns)
 
   # create a dummy super class for chaining the overridden methods
-  _link_super = target_constructor.__super__.constructor
-  class Link extends _link_super
-    constructor: ->
-      @__bba_super = _link_super
-      _.extend(@, fns)
-      super
+  class Link extends target_constructor.__super__.constructor
 
   # mixin the required functions
   Link.prototype[name] = fn for name, fn of fns
+  Link.prototype.__bba_super = target_constructor.__super__.constructor
+  Link.prototype.__bba_toJSON = Link.prototype['toJSON']
 
   # set up the hierarchy
+  target_constructor.prototype.__proto__ = Link.prototype
   target_constructor.__super__ = Link.prototype
 
 ##################################
@@ -180,7 +179,7 @@ if (typeof(Backbone.RelationalModel) != 'undefined')
       # If this Model has already been fully serialized in this branch once, return to avoid loops
       return @id if @isLocked()
       @acquire()
-      json = Backbone.Model::toJSON.call(this)
+      json = if @__bba_toJSON then @__bba_toJSON.call(this) else (throw 'Backbone.Articulation.RelationalModel is not configured correctly')
       for rel in @_relations
         value = json[rel.key]
         if rel.options.includeInJSON is true and value and (typeof (value) is "object")
@@ -209,7 +208,7 @@ if (typeof(Backbone.RelationalModel) != 'undefined')
     _reset: ->
       # memory clean up
       (Backbone.Relational.store.unregister(model) for model in @models) if @models
-      @__bba_super.prototype._reset.apply(this, arguments)
+      @constructor.__super__.constructor.__super__._reset.apply(this, arguments)
   })
 
   # add Backbone.Articulation.Model into Backbone.Articulation.RelationalModel

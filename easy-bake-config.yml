@@ -24,15 +24,25 @@ tests:
         test/packaging/build/bundle-latest.js:
           underscore: underscore
           backbone: backbone
+          backbone-relational: backbone-relational
           json-serialize: json-serialize
           lifecycle: lifecycle
           backbone-articulation: backbone-articulation.js
+          _publish:
+            underscore: _
+            backbone: Backbone
+
         test/packaging/build/bundle-legacy.js:
           underscore: vendor/underscore-1.0.3.js
           backbone: vendor/backbone-0.5.1.js
+          backbone-relational: backbone-relational
           json-serialize: json-serialize
           lifecycle: lifecycle
           backbone-articulation: backbone-articulation.js
+          _publish:
+            underscore: _
+            backbone: Backbone
+
       no_files_ok: ['test/packaging']
     test:
       command: phantomjs
