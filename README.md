@@ -18,8 +18,8 @@ You can get the library here:
 * [JSON-Serialize.js][5]
 * [Lifecycle.js][6]
 
-[1]: https://github.com/kmalakoff/backbone-articulation/raw/master/backbone-articulation_core.js
-[2]: https://github.com/kmalakoff/backbone-articulation/raw/master/backbone-articulation_core.min.js
+[1]: https://raw.github.com/kmalakoff/backbone-articulation/0.3.1/backbone-articulation.js
+[2]: https://raw.github.com/kmalakoff/backbone-articulation/0.3.1/backbone-articulation.min.js
 [3]: http://backbonejs.org/
 [4]: http://underscorejs.org/
 [5]: https://github.com/kmalakoff/json-serialize
