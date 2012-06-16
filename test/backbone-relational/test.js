@@ -12,22 +12,23 @@ var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, par
 //////////////////////////////
 $(document).ready(function() {
 
-  module("Backbone.Relational");
-
   var Backbone = (typeof require !== 'undefined') ? require('backbone') : window.Backbone;
-  Backbone.Articulation = (typeof require !== 'undefined') ? require('backbone-articulation') : Backbone.Articulation
-  Backbone.Relational = (typeof require !== 'undefined') ? require('backbone-relational') : Backbone.Relational
+  Articulation = (typeof require !== 'undefined') ? require('backbone-articulation') : Backbone.Articulation
+  if (typeof require !== 'undefined') { require('backbone-relational'); }
+  if (typeof require !== 'undefined') { require('backbone-articulation-backbone-relational'); }
   var JSONS = (typeof require !== 'undefined') ? require('json-serialize') : window.JSONS;
   var _ = (typeof require !== 'undefined') ? require('underscore') : window._;
   if (_ && !_.VERSION) {_ = _._;} // LEGACY
 
   test("TEST DEPENDENCY MISSING", function() {
-    ok(!!Backbone); ok(!!Backbone.Articulation); ok(!!JSONS); ok(!!_);
+    ok(!!Backbone); ok(!!Backbone.Relational); ok(!!Articulation); ok(!!JSONS); ok(!!_);
   });
 
   CloneDestroy = (function() {
     CloneDestroy.instance_count = 0;
-    function CloneDestroy() { CloneDestroy.instance_count++; }
+    function CloneDestroy() {
+      CloneDestroy.instance_count++;
+    }
     CloneDestroy.fromJSON = function(obj) {
       if (obj._type!='CloneDestroy') return null;
       return new CloneDestroy();
@@ -35,8 +36,12 @@ $(document).ready(function() {
     CloneDestroy.prototype.toJSON = function() {
       return {_type: 'CloneDestroy'};
     };
-    CloneDestroy.prototype.clone = function() { return new CloneDestroy(); };
-    CloneDestroy.prototype.destroy = function() { CloneDestroy.instance_count--; };
+    CloneDestroy.prototype.clone = function() {
+      return new CloneDestroy();
+    };
+    CloneDestroy.prototype.destroy = function() {
+      CloneDestroy.instance_count--;
+    };
     return CloneDestroy;
   })();
 
@@ -63,7 +68,7 @@ $(document).ready(function() {
 
       return SelfReferencingModel;
 
-    })(Backbone.Articulation.RelationalModel);
+    })(Articulation.BackboneRelationalModel);
 
     parent_model = new SelfReferencingModel({name: 'parent', id: 'parent1', resource_uri: 'srm'});
     child_model = new SelfReferencingModel({name: 'child', resource_uri: 'srm'});
@@ -77,7 +82,7 @@ $(document).ready(function() {
 
   test("Collection: serialize", function() {
     CloneDestroy.instance_count=0;
-    var collection = new Backbone.Articulation.Collection();
+    var collection = new Articulation.BackboneRelationalCollection();
     var model_attributes = {attr1: {_type:'CloneDestroy'}, attr2: {_type:'CloneDestroy'}, attr3: {_type:'CloneDestroy'}};
     var models_as_JSON = [];
     for (var i=0; i<3; i++) {
@@ -94,19 +99,20 @@ $(document).ready(function() {
 
   test("Collection: deserialize", function() {
     CloneDestroy.instance_count=0;
-    var collection = new Backbone.Articulation.Collection();
-    collection.add(new Backbone.Articulation.RelationalModel({id: 0, attr1: new CloneDestroy(), attr2: new CloneDestroy(), attr3: new CloneDestroy()}))
-    collection.add(new Backbone.Articulation.RelationalModel({id: 1, attr1: new CloneDestroy(), attr2: new CloneDestroy(), attr3: new CloneDestroy()}))
-    collection.add(new Backbone.Articulation.RelationalModel({id: 2, attr1: new CloneDestroy(), attr2: new CloneDestroy(), attr3: new CloneDestroy()}))
+    var collection = new Articulation.BackboneRelationalCollection();
+    var model1 = new Articulation.BackboneRelationalModel({id: 0, attr1: new CloneDestroy(), attr2: new CloneDestroy(), attr3: new CloneDestroy()});
+    var model2 = new Articulation.BackboneRelationalModel({id: 1, attr1: new CloneDestroy(), attr2: new CloneDestroy(), attr3: new CloneDestroy()});
+    var model3 = new Articulation.BackboneRelationalModel({id: 2, attr1: new CloneDestroy(), attr2: new CloneDestroy(), attr3: new CloneDestroy()});
 
+    collection.add(model1); collection.add(model2); collection.add(model3);
     equal(collection.models.length, 3, '3 models');
-    equal(CloneDestroy.instance_count, 3*(collection.models.length*2), '3 models with three instances in their attributes and previous attributes');
+    equal(CloneDestroy.instance_count, 3*(collection.models.length) + 9, '3 models with three instances in their attributes and previous attributes (+ 9 Backbone.Relational does not provide a hook for proper ownership)');
 
     var models_as_JSON = collection.toJSON(); models_as_JSON.shift();
-    var collection2 = new Backbone.Articulation.Collection();
+    var collection2 = new Articulation.BackboneRelationalCollection();
     collection2.add(collection2.parse(models_as_JSON));
     equal(collection2.models.length, 2, '2 models');
-    equal(CloneDestroy.instance_count, 3*2*(collection.models.length+collection2.models.length), '5 models with three instances in their attributes and previous attributes');
+    equal(CloneDestroy.instance_count, 3*(collection.models.length+collection2.models.length) + 9, '5 models with three instances in their attributes and previous attributes (+ 9 Backbone.Relational does not provide a hook for proper ownership)');
 
     collection.reset(); collection2.reset();
 

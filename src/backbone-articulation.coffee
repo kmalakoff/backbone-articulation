@@ -1,30 +1,29 @@
 ###
-  Backbone-Articulation.js 0.3.2
+  backbone-articulation.js 0.3.2
   (c) 2011, 2012 Kevin Malakoff.
   Backbone-Articulation may be freely distributed under the MIT license.
   https://github.com/kmalakoff/backbone-articulation
 ###
 
 # import Underscore and Backbone
-_ = if not @_ and (typeof(require) != 'undefined') then require('underscore') else @_
+_ = if (typeof(require) != 'undefined') then require('underscore') else @_
 _ = _._ if _ and not _.VERSION # LEGACY
-Backbone = if not @Backbone and (typeof(require) != 'undefined') then require('backbone') else @Backbone
-Backbone.Relational = if not Backbone.Relational and (typeof(require) != 'undefined') then require('backbone-relational') else Backbone.Relational
+Backbone = if (typeof(require) != 'undefined') then require('backbone') else @Backbone
 
 # import JSON-Serialize.js (JSONS.serialize, JSONS) and Lifecycle.js (LC.own, LC.disown)
-JSONS = if not @JSONS and (typeof(require) != 'undefined') then require('json-serialize') else @JSONS
-LC = if not @LC and (typeof(require) != 'undefined') then require('lifecycle') else @LC
+JSONS = if (typeof(require) != 'undefined') then require('json-serialize') else @JSONS
+LC = if (typeof(require) != 'undefined') then require('lifecycle') else @LC
 
 ##############################################
-# export or create Backbone.Articulation namespace
-Backbone.Articulation = if (typeof(exports) != 'undefined') then exports else {}
-Backbone.Articulation.VERSION = '0.3.2'
+# export or create Articulation namespace
+Backbone.Articulation = Articulation = if (typeof(exports) != 'undefined') then exports else {}
+Articulation.VERSION = '0.3.2'
 
 # setting - if you set to true, you must provide String.prototype.underscore and String.prototype.singularize (for example, from inflection.js)
 # Note: this is not guaranteed to work unless Class.constructor.name exists
-Backbone.Articulation.TYPE_UNDERSCORE_SINGULARIZE = false
+Articulation.TYPE_UNDERSCORE_SINGULARIZE = false
 
-Backbone.Articulation._mixin = (target_constructor, source_constructor, source_fns) ->
+Articulation._mixin = (target_constructor, source_constructor, source_fns) ->
   fns = _.pick(source_constructor.prototype, source_fns)
 
   # create a dummy super class for chaining the overridden methods
@@ -40,9 +39,9 @@ Backbone.Articulation._mixin = (target_constructor, source_constructor, source_f
   target_constructor.__super__ = Link.prototype
 
 ##################################
-# Backbone.Articulation.Model
+# Articulation.Model
 ##################################
-class Backbone.Articulation.Model extends Backbone.Model
+class Articulation.Model extends Backbone.Model
   @extend = Backbone.Model.extend
   __bba_super: Backbone.Model
 
@@ -61,7 +60,7 @@ class Backbone.Articulation.Model extends Backbone.Model
     return json unless class_name
 
     # convert the class using an underscore and singularize convention, eg. CouchDB "type" field convention
-    if Backbone.Articulation.TYPE_UNDERSCORE_SINGULARIZE
+    if Articulation.TYPE_UNDERSCORE_SINGULARIZE
       throw 'Missing String.prototype.underscore' unless String::underscore
       throw 'Missing String.prototype.singularize' unless String::singularize
       json[JSONS.TYPE_FIELD] = class_name.underscore().singularize()
@@ -129,18 +128,18 @@ class Backbone.Articulation.Model extends Backbone.Model
     return value if _.isArray(value) and value.length and (value[0] instanceof Backbone.Model) or (value[0] instanceof Backbone.Collection)
     LC.disown(value)
 
-  # allows mixin of Backbone.Articulation.Model into existing hierarchies. Pass the constructor in to be mixed in.
+  # allows mixin of Articulation.Model into existing hierarchies. Pass the constructor in to be mixed in.
   @mixin: (target_constructor) ->
-    Backbone.Articulation._mixin(target_constructor, Backbone.Articulation.Model, ['toJSON', 'parse', 'set', 'unset', 'clear', 'change', '_ownAttribute', '_disownAttribute'])
+    Articulation._mixin(target_constructor, Articulation.Model, ['toJSON', 'parse', 'set', 'unset', 'clear', 'change', '_ownAttribute', '_disownAttribute'])
 
 ##################################
-# Backbone.Articulation.Collection
+# Articulation.Collection
 ##################################
-class Backbone.Articulation.Collection extends Backbone.Collection
+class Articulation.Collection extends Backbone.Collection
   @extend = Backbone.Collection.extend
   __bba_super: Backbone.Collection
 
-  model: Backbone.Articulation.Model
+  model: Articulation.Model
 
   # Converts all of its models to plain old JSON (if needed) using JSONS.serialize.
   toJSON: ->
@@ -166,60 +165,6 @@ class Backbone.Articulation.Collection extends Backbone.Collection
     model.clear({silent: true}) if model
     @__bba_super.prototype._removeReference.apply(this, arguments)
 
-  # allows mixin of Backbone.Articulation.Model into existing hierarchies. Pass the constructor in to be mixed in.
+  # allows mixin of Articulation.Model into existing hierarchies. Pass the constructor in to be mixed in.
   @mixin: (target_constructor) ->
-    Backbone.Articulation._mixin(target_constructor, Backbone.Articulation.Collection, ['toJSON', 'parse', '_reset', '_onModelEvent'])
-
-if (typeof(Backbone.RelationalModel) != 'undefined')
-  ##########################
-  # Backbone.Articulation.RelationalModel
-  ##########################
-  Backbone.Articulation.RelationalModel = Backbone.RelationalModel.extend({
-    toJSON: ->
-      # If this Model has already been fully serialized in this branch once, return to avoid loops
-      return @id if @isLocked()
-      @acquire()
-      json = if @__bba_toJSON then @__bba_toJSON.call(this) else (throw 'Backbone.Articulation.RelationalModel is not configured correctly')
-      for rel in @_relations
-        value = json[rel.key]
-        if rel.options.includeInJSON is true and value and (typeof (value) is "object")
-          json[rel.key] = (if _.isFunction(value.toJSON) then value.toJSON() else value)
-        else if _.isString(rel.options.includeInJSON)
-          unless value
-            json[rel.key] = null
-          else if value instanceof Backbone.Collection
-            json[rel.key] = value.pluck(rel.options.includeInJSON)
-          else if value instanceof Backbone.Model
-            json[rel.key] = value.get(rel.options.includeInJSON)
-          # POD array (serialized collection)
-          else if _.isArray(value)
-            json[rel.key] = []
-            for model_json, index in value
-              json[rel.key].push model_json[rel.options.includeInJSON] unless _.isUndefined(model_json)
-          # POD object (serialized model)
-          else if value instanceof Object
-            json[rel.key] = value[rel.options.includeInJSON]
-        else
-          delete json[rel.key]
-
-      @release()
-      return json
-
-    _reset: ->
-      # memory clean up
-      (Backbone.Relational.store.unregister(model) for model in @models) if @models
-      @constructor.__super__.constructor.__super__._reset.apply(this, arguments)
-  })
-
-  # add Backbone.Articulation.Model into Backbone.Articulation.RelationalModel
-  Backbone.Articulation.Model.mixin(Backbone.Articulation.RelationalModel)
-
-  ##########################
-  # Backbone.Articulation.RelationalCollection
-  ##########################
-  Backbone.Articulation.RelationalCollection = Backbone.Articulation.Collection.extend({
-    model: Backbone.Articulation.RelationalModel
-  })
-
-  # add Backbone.Articulation.Model into Backbone.Articulation.RelationalModel
-  Backbone.Articulation.Collection.mixin(Backbone.Articulation.RelationalCollection)
+    Articulation._mixin(target_constructor, Articulation.Collection, ['toJSON', 'parse', '_reset', '_onModelEvent'])
