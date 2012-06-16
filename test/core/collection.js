@@ -12,17 +12,17 @@ var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, par
 //////////////////////////////
 $(document).ready(function() {
 
-  module("Backbone.Collection");
+  module("Backbone.Articulation.Collection");
 
   // import Backbone, and Articulation
   var Backbone = !window.Backbone && (typeof require !== 'undefined') ? require('backbone') : window.Backbone;
-  var Articulation = (typeof require !== 'undefined') ? require('backbone-articulation') : Backbone.Articulation
+  Backbone.Articulation = (typeof require !== 'undefined') ? require('backbone-articulation') : Backbone.Articulation
   var JSONS = !window.JSONS && (typeof require !== 'undefined') ? require('json-serialize') : window.JSONS;
   var _ = !window._ && (typeof require !== 'undefined') ? require('underscore') : window._;
   if (_ && !_.VERSION) {_ = _._;} // LEGACY
 
   test("TEST DEPENDENCY MISSING", function() {
-    ok(!!Backbone); ok(!!Articulation); ok(!!JSONS); ok(!!_);
+    ok(!!Backbone); ok(!!Backbone.Articulation); ok(!!JSONS); ok(!!_);
   });
 
   CloneDestroy = (function() {
@@ -41,7 +41,7 @@ $(document).ready(function() {
   })();
 
   SomeModel = (function() {
-    __extends(SomeModel, Backbone.Model);
+    __extends(SomeModel, Backbone.Articulation.Model);
     function SomeModel() {
       SomeModel.__super__.constructor.apply(this, arguments);
     }
@@ -51,7 +51,7 @@ $(document).ready(function() {
 
   test("Collection: serialize", function() {
     CloneDestroy.instance_count=0;
-    var collection = new Backbone.Collection();
+    var collection = new Backbone.Articulation.Collection();
     var model_attributes = {attr1: {_type:'CloneDestroy'}, attr2: {_type:'CloneDestroy'}, attr3: {_type:'CloneDestroy'}};
     var models_as_JSON = [];
     for (var i=0; i<3; i++) {
@@ -68,16 +68,16 @@ $(document).ready(function() {
 
   test("Collection: deserialize", function() {
     CloneDestroy.instance_count=0;
-    var collection = new Backbone.Collection();
-    collection.add(new Backbone.Model({id: 0, attr1: new CloneDestroy(), attr2: new CloneDestroy(), attr3: new CloneDestroy()}))
-    collection.add(new Backbone.Model({id: 1, attr1: new CloneDestroy(), attr2: new CloneDestroy(), attr3: new CloneDestroy()}))
-    collection.add(new Backbone.Model({id: 2, attr1: new CloneDestroy(), attr2: new CloneDestroy(), attr3: new CloneDestroy()}))
+    var collection = new Backbone.Articulation.Collection();
+    collection.add(new Backbone.Articulation.Model({id: 0, attr1: new CloneDestroy(), attr2: new CloneDestroy(), attr3: new CloneDestroy()}))
+    collection.add(new Backbone.Articulation.Model({id: 1, attr1: new CloneDestroy(), attr2: new CloneDestroy(), attr3: new CloneDestroy()}))
+    collection.add(new Backbone.Articulation.Model({id: 2, attr1: new CloneDestroy(), attr2: new CloneDestroy(), attr3: new CloneDestroy()}))
 
     equal(collection.models.length, 3, '3 models');
     equal(CloneDestroy.instance_count, 3*(collection.models.length*2), '3 models with three instances in their attributes and previous attributes');
 
     var models_as_JSON = collection.toJSON(); models_as_JSON.shift();
-    var collection2 = new Backbone.Collection();
+    var collection2 = new Backbone.Articulation.Collection();
     collection2.add(collection2.parse(models_as_JSON));
     equal(collection2.models.length, 2, '2 models');
     equal(CloneDestroy.instance_count, 3*2*(collection.models.length+collection2.models.length), '5 models with three instances in their attributes and previous attributes');
@@ -87,7 +87,7 @@ $(document).ready(function() {
   });
 
   test("Collection: type from model prototype", function() {
-    var collection = new Backbone.Collection();
+    var collection = new Backbone.Articulation.Collection();
     collection.add(new SomeModel({id: 0, attr1: new CloneDestroy(), attr2: new CloneDestroy(), attr3: new CloneDestroy()}))
 
     var models_as_JSON = collection.toJSON();
@@ -95,10 +95,10 @@ $(document).ready(function() {
   });
 
   test("Collection: Articulation.TYPE_UNDERSCORE_SINGULARIZE", function() {
-    Articulation.TYPE_UNDERSCORE_SINGULARIZE = true;
+    Backbone.Articulation.TYPE_UNDERSCORE_SINGULARIZE = true;
     JSONS.TYPE_FIELD = "type";
 
-    var collection = new Backbone.Collection();
+    var collection = new Backbone.Articulation.Collection();
     collection.add(new SomeModel({id: 0, attr1: new CloneDestroy(), attr2: new CloneDestroy(), attr3: new CloneDestroy()}))
 
     equal(collection.models.length, 1, '1 model');
@@ -111,7 +111,7 @@ $(document).ready(function() {
     equal(models_as_JSON[0].type, 'some_model', "type is some_model as expected");
 
     // return to defaults
-    Articulation.TYPE_UNDERSCORE_SINGULARIZE = false;
+    Backbone.Articulation.TYPE_UNDERSCORE_SINGULARIZE = false;
     JSONS.TYPE_FIELD = "_type";
   });
 });

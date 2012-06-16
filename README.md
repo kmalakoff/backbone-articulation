@@ -127,6 +127,10 @@ A big thank you to Jeremy Ashkenas and DocumentCloud for making all of this Back
 
 - removed the bundled version of backbone-articulation (now you must include JSON-Serialize.js and Lifecycle.js manually (see above)
 
+###0.3.3
+
+- removed Backbone.Model monkey patching and used change() instead
+
 
 Building, Running and Testing the library
 -----------------------

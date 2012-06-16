@@ -3,17 +3,17 @@
 //////////////////////////////
 $(document).ready(function() {
 
-  module("Backbone.Model");
+  module("Backbone.Articulation.Model");
 
   // import Backbone, Articulation, and JSON-Serialize.js
   var Backbone = !window.Backbone && (typeof require !== 'undefined') ? require('backbone') : window.Backbone;
-  var Articulation = (typeof require !== 'undefined') ? require('backbone-articulation') : Backbone.Articulation
+  Backbone.Articulation = (typeof require !== 'undefined') ? require('backbone-articulation') : Backbone.Articulation
   var JSONS = !window.JSONS && (typeof require !== 'undefined') ? require('json-serialize') : window.JSONS;
   var _ = !window._ && (typeof require !== 'undefined') ? require('underscore') : window._;
   if (_ && !_.VERSION) {_ = _._;} // LEGACY
 
   test("TEST DEPENDENCY MISSING", function() {
-    ok(!!Backbone); ok(!!Articulation); ok(!!JSONS); ok(!!_);
+    ok(!!Backbone); ok(!!Backbone.Articulation); ok(!!JSONS); ok(!!_);
   });
 
   Date.prototype.isEqual = function(that) { return (this.valueOf() == that.valueOf()) };
@@ -64,7 +64,7 @@ $(document).ready(function() {
   };
 
   test("Model: deserialize from JSON", function() {
-    var model = new Backbone.Model(), result;
+    var model = new Backbone.Articulation.Model(), result;
 
     result = model.parse(attrs); model.set(result);
     equal(_.size(model.attributes), 3, 'all attributes were deserialized');
@@ -76,7 +76,7 @@ $(document).ready(function() {
   });
 
   test("Model: serialize to JSON", function() {
-    var model = new Backbone.Model(), instance, result;
+    var model = new Backbone.Articulation.Model(), instance, result;
     model.set({_type:'SomeNamespace.SomeClass', id: 'test_model', name: 'testy'});
     instance = new SomeNamespace.SomeClass(int_value, string_value, date_value);
     model.set({a_class: instance});
@@ -103,10 +103,12 @@ $(document).ready(function() {
     })();
 
     var attributes = {id: 'superstar', attr1: {_type:'CloneDestroy'}, attr2: {_type:'CloneDestroy'}, attr3: {_type:'CloneDestroy'}};
-    var model = new Backbone.Model(), instance = new CloneDestroy(), result;
+    var model = new Backbone.Articulation.Model(), instance = new CloneDestroy(), result;
 
     equal(CloneDestroy.instance_count, 1, '1 referenced instance');
-    model.set(model.parse(attributes));
+    var deserialized_attributes = model.parse(attributes);
+    model.set(deserialized_attributes);
+    LC.disown(deserialized_attributes, {properties:true}); deserialized_attributes = null;
     equal(CloneDestroy.instance_count, 7, '1 referenced instance + 3 in attributes + 3 in previous attributes');
     model.set({attr1: 1});
     equal(CloneDestroy.instance_count, 5, '1 referenced instance + 2 in attributes + 2 in previous attributes');
@@ -128,10 +130,12 @@ $(document).ready(function() {
     })();
 
     var attributes = {id: 'superstar', attr1: {_type:'RetainRelease'}, attr2: {_type:'RetainRelease'}, attr3: {_type:'RetainRelease'}};
-    var model = new Backbone.Model(), instance = new RetainRelease(), result;
+    var model = new Backbone.Articulation.Model(), instance = new RetainRelease(), result;
 
     equal(RetainRelease.retain_count, 1, '1 referenced instance');
-    model.set(model.parse(attributes));
+    var deserialized_attributes = model.parse(attributes);
+    model.set(deserialized_attributes);
+    LC.disown(deserialized_attributes, {properties:true}); deserialized_attributes = null;
     equal(RetainRelease.retain_count, 7, '1 referenced instance + 3 in attributes + 3 in previous attributes');
     model.set({attr1: 1});
     equal(RetainRelease.retain_count, 5, '1 referenced instance + 2 in attributes + 2 in previous attributes');

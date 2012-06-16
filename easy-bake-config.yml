@@ -16,6 +16,7 @@ tests:
   directories:
     - test/core
     - test/backbone-relational
+    - test/mixin
     - test/packaging
   modes:
     build:
