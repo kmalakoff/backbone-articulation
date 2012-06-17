@@ -43,7 +43,7 @@ Articulation._mixin = (target_constructor, source_constructor, source_fns) ->
 ##################################
 class Articulation.Model extends Backbone.Model
   @extend = Backbone.Model.extend
-  __bba_super: Backbone.Model
+  __bba_super: Backbone.Model  # provide the super class to mixin functions
 
   # Converts a model attributes from objects to plain old JSON (if needed).
   toJSON: ->
@@ -137,9 +137,8 @@ class Articulation.Model extends Backbone.Model
 ##################################
 class Articulation.Collection extends Backbone.Collection
   @extend = Backbone.Collection.extend
-  __bba_super: Backbone.Collection
-
-  model: Articulation.Model
+  __bba_super: Backbone.Collection  # provide the super class to mixin functions
+  model: Articulation.Model # default model type
 
   # Converts all of its models to plain old JSON (if needed) using JSONS.serialize.
   toJSON: ->
