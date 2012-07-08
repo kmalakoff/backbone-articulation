@@ -9,7 +9,7 @@ $(document).ready(function() {
   var Backbone = (typeof require !== 'undefined') ? require('backbone') : window.Backbone;
   Backbone.Articulation = (typeof require !== 'undefined') ? require('backbone-articulation') : Backbone.Articulation
   var JSONS = (typeof require !== 'undefined') ? require('json-serialize') : window.JSONS;
-  var _ = (typeof require !== 'undefined') ? require('underscore') : window._;
+  var _ = (typeof require !== 'undefined') ? require('lodash') : window._;
   if (_ && _.hasOwnProperty('_')) _ = _._; // LEGACY
 
   test("TEST DEPENDENCY MISSING", function() {

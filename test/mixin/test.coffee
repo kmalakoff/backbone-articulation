@@ -1,9 +1,9 @@
 $(document).ready( ->
   module("mixin")
 
-  # import Underscore, Backbone, and Articulation
-  _ = if (typeof(require) != 'undefined') then require('underscore') else window._
-  _ = _._ if _ and not _.VERSION # LEGACY
+  # import Underscore (or Lo-Dash with precedence), Backbone, and Articulation
+  if (typeof(require) != 'undefined') then _ = require('underscore') else _ = window._
+  _ = _._ if _ and (_.hasOwnProperty('_')) # LEGACY
   Backbone = if (typeof(require) != 'undefined') then require('backbone') else window.Backbone
   Backbone.Articulation = if (typeof(require) != 'undefined') then require('backbone-articulation') else Backbone.Articulation
 

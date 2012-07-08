@@ -1,13 +1,13 @@
 ###
-  backbone-articulation-backbone-relational.js 0.3.2
+  backbone-articulation-backbone-relational.js 0.3.3
   (c) 2011, 2012 Kevin Malakoff.
   Backbone-Articulation-Backbone-Relational may be freely distributed under the MIT license.
   https://github.com/kmalakoff/backbone-articulation
 ###
 
-# import Underscore, Backbone, Backbone Articultion and Backbone.Relational
-_ = if (typeof(require) != 'undefined') then require('underscore') else @_
-_ = _._ if _ and not _.VERSION # LEGACY
+# import Underscore (or Lo-Dash with precedence), Backbone, Backbone Articultion and Backbone.Relational
+if (typeof(require) != 'undefined') then (try _ = require('lodash') catch e then _ = require('underscore')) else _ = @_
+_ = _._ if _ and (_.hasOwnProperty('_')) # LEGACY
 Backbone = if (typeof(require) != 'undefined') then require('backbone') else @Backbone
 Articulation = if (typeof(require) != 'undefined') then require('backbone-articulation') else @Backbone.Articulation
 require('backbone-relational') if (typeof(require) != 'undefined')

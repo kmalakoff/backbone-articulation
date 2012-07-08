@@ -1,15 +1,14 @@
 ###
-  backbone-articulation.js 0.3.2
+  backbone-articulation.js 0.3.3
   (c) 2011, 2012 Kevin Malakoff.
   Backbone-Articulation may be freely distributed under the MIT license.
   https://github.com/kmalakoff/backbone-articulation
 ###
 
-# import Underscore and Backbone
-_ = if (typeof(require) != 'undefined') then require('underscore') else @_
-_ = _._ if _ and not _.VERSION # LEGACY
+# import Underscore (or Lo-Dash with precedence) and Backbone
+if (typeof(require) != 'undefined') then (try _ = require('lodash') catch e then _ = require('underscore')) else _ = @_
+_ = _._ if _ and (_.hasOwnProperty('_')) # LEGACY
 Backbone = if (typeof(require) != 'undefined') then require('backbone') else @Backbone
-
 # import JSON-Serialize.js (JSONS.serialize, JSONS) and Lifecycle.js (LC.own, LC.disown)
 JSONS = if (typeof(require) != 'undefined') then require('json-serialize') else @JSONS
 LC = if (typeof(require) != 'undefined') then require('lifecycle') else @LC
@@ -17,7 +16,7 @@ LC = if (typeof(require) != 'undefined') then require('lifecycle') else @LC
 ##############################################
 # export or create Articulation namespace
 Backbone.Articulation = Articulation = if (typeof(exports) != 'undefined') then exports else {}
-Articulation.VERSION = '0.3.2'
+Articulation.VERSION = '0.3.3'
 
 # setting - if you set to true, you must provide String.prototype.underscore and String.prototype.singularize (for example, from inflection.js)
 # Note: this is not guaranteed to work unless Class.constructor.name exists

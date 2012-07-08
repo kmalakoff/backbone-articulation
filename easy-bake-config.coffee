@@ -33,6 +33,7 @@ module.exports =
       'test/backbone-relational'
       'test/mixin'
       'test/packaging'
+      'test/lodash'
     ]
     modes:
       build:
@@ -59,6 +60,18 @@ module.exports =
             'backbone-articulation-backbone-relational': 'lib/backbone-articulation-backbone-relational.js'
             _publish:
               underscore: '_'
+              backbone: 'Backbone'
+
+          'test/lodash/build/bundle-lodash.js':
+            lodash: 'vendor/lodash-0.3.2.js'
+            backbone: 'backbone'
+            'backbone-relational': 'backbone-relational'
+            'json-serialize': 'json-serialize'
+            lifecycle: 'lifecycle'
+            'backbone-articulation': 'backbone-articulation.js'
+            'backbone-articulation-backbone-relational': 'lib/backbone-articulation-backbone-relational.js'
+            _publish:
+              lodash: '_'
               backbone: 'Backbone'
 
         no_files_ok: 'test/packaging'

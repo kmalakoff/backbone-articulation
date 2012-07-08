@@ -18,7 +18,7 @@ $(document).ready(function() {
   if (typeof require !== 'undefined') { require('backbone-articulation-backbone-relational'); }
   var JSONS = (typeof require !== 'undefined') ? require('json-serialize') : window.JSONS;
   var _ = (typeof require !== 'undefined') ? require('underscore') : window._;
-  if (_ && !_.VERSION) {_ = _._;} // LEGACY
+  if (_ && _.hasOwnProperty('_')) _ = _._; // LEGACY
 
   test("TEST DEPENDENCY MISSING", function() {
     ok(!!Backbone); ok(!!Backbone.Relational); ok(!!Articulation); ok(!!JSONS); ok(!!_);
