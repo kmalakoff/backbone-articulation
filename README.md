@@ -18,13 +18,6 @@ You can get the library here:
 * [JSON-Serialize.js][5]
 * [Lifecycle.js][6]
 
-[1]: https://raw.github.com/kmalakoff/backbone-articulation/0.3.1/backbone-articulation.js
-[2]: https://raw.github.com/kmalakoff/backbone-articulation/0.3.1/backbone-articulation.min.js
-[3]: http://backbonejs.org/
-[4]: http://underscorejs.org/
-[5]: https://github.com/kmalakoff/json-serialize
-[6]: https://github.com/kmalakoff/lifecycle
-
 Due to monkey patching, you must include the dependencies in this order:
 
 1. Backbone
@@ -143,3 +136,10 @@ Building, Running and Testing the library
 ###Commands:
 
 Look at: https://github.com/kmalakoff/easy-bake
+
+[1]: https://raw.github.com/kmalakoff/backbone-articulation/0.3.1/backbone-articulation.js
+[2]: https://raw.github.com/kmalakoff/backbone-articulation/0.3.1/backbone-articulation.min.js
+[3]: http://backbonejs.org/
+[4]: http://underscorejs.org/
+[5]: https://github.com/kmalakoff/json-serialize
+[6]: https://github.com/kmalakoff/lifecycle
