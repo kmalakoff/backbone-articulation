@@ -47,8 +47,8 @@ module.exports =
             'backbone-articulation': 'backbone-articulation.js'
             'backbone-articulation-backbone-relational': 'lib/backbone-articulation-backbone-relational.js'
             _publish:
-              underscore: '_'
-              backbone: 'Backbone'
+              _: 'underscore'
+              Backbone: 'backbone'
 
           'test/packaging/build/bundle-legacy.js':
             underscore: 'vendor/underscore-1.1.7.js'
@@ -59,8 +59,8 @@ module.exports =
             'backbone-articulation': 'backbone-articulation.js'
             'backbone-articulation-backbone-relational': 'lib/backbone-articulation-backbone-relational.js'
             _publish:
-              underscore: '_'
-              backbone: 'Backbone'
+              _: 'underscore'
+              Backbone: 'backbone'
 
           'test/lodash/build/bundle-lodash.js':
             lodash: 'vendor/lodash-0.3.2.js'
@@ -73,6 +73,8 @@ module.exports =
             _publish:
               lodash: '_'
               backbone: 'Backbone'
+            _alias:
+              underscore: 'lodash'
 
         no_files_ok: 'test/packaging'
       test:
