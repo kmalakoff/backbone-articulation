@@ -1,7 +1,7 @@
 {
   "author"        : {"name": "Kevin Malakoff", "url": "https://github.com/kmalakoff"},
   "name"          : "backbone-articulation",
-  "description"   : "Backbone-Articulation.js enhances Backbone.js model attributes with object serialization and deserialization",
+  "description"   : "Backbone-Articulation.js enhances Backbone.js model attributes with object serialization and deserialization.",
   "keywords"      : ["backbone-articulation", "backbone-articulationjs", "backbone", "backbonejs", "backbone-relational", "backbone-rel"],
 
   "url"           : "http://kmalakoff.github.com/backbone-articulation/",
