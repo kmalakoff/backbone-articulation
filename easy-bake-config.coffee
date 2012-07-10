@@ -25,11 +25,11 @@ module.exports =
       ]
 
   tests:
-    output: 'build'
-    directories: [
-      'test/mixin'
-    ]
     _build:
+      output: 'build'
+      directories: [
+        'test/mixin'
+      ]
       commands: [
         'mbundle test/packaging/bundle-config.coffee'
         'mbundle test/lodash/bundle-config.coffee'
