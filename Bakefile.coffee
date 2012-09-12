@@ -7,6 +7,7 @@ module.exports =
       commands: [
         'cp backbone-articulation.js packages/npm/backbone-articulation.js'
         'cp backbone-articulation.min.js packages/npm/backbone-articulation.min.js'
+        'cp README.md packages/npm/README.md'
         'cp backbone-articulation.js packages/nuget/Content/Scripts/backbone-articulation.js'
         'cp backbone-articulation.min.js packages/nuget/Content/Scripts/backbone-articulation.min.js'
       ]
