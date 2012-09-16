@@ -8,15 +8,15 @@ Backbone-Articulation.js enhances Backbone.js model attributes with object seria
 
 You can get the library here:
 
-* [Development version][1]
-* [Production version][2]
+* [Development version](https://raw.github.com/kmalakoff/backbone-articulation/0.3.1/backbone-articulation.js)
+* [Production version](https://raw.github.com/kmalakoff/backbone-articulation/0.3.1/backbone-articulation.min.js)
 
 ### Dependencies
 
-* [Backbone.js][3]
-* [Underscore.js][4]
-* [JSON-Serialize.js][5]
-* [Lifecycle.js][6]
+* [Backbone.js](http://backbonejs.org/)
+* [Underscore.js](http://underscorejs.org/)
+* [Lifecycle.js](https://github.com/kmalakoff/lifecycle)
+* [JSON-Serialize.js](https://github.com/kmalakoff/json-serialize)
 
 Due to monkey patching, you must include the dependencies in this order:
 
@@ -71,16 +71,13 @@ instance2.fetch({
 
 **Note: You can use heterogenous lifecycles paradigms in the same model's attributes and even embed Backbone models in your attributes (by adding type attribute)!**
 
-* see [Lifecycle.js][7] for more details.
+* see [Lifecycle.js](https://github.com/kmalakoff/lifecycle) for more details.
 
 2) Choose a serialization/deserialization strategy
   a) using toJSON() instance method and fromJSON class or factory method
   b) plain old JSON (with no custom serialization)
 
-* see [JSON-Serialize.js][8] for more details **and library options**.
-
-[7]: https://github.com/kmalakoff/lifecycle
-[8]: https://github.com/kmalakoff/json-serialize
+* see [JSON-Serialize.js](https://github.com/kmalakoff/json-serialize) for more details **and library options**.
 
 If you choose 2a) - take a look at the examples below and:
 
@@ -120,7 +117,7 @@ A big thank you to Jeremy Ashkenas and DocumentCloud for making all of this Back
 
 - removed the bundled version of backbone-articulation (now you must include JSON-Serialize.js and Lifecycle.js manually (see above)
 
-###0.3.3
+###0.3.4
 
 - removed Backbone.Model monkey patching and used change() instead
 
@@ -136,10 +133,3 @@ Building, Running and Testing the library
 ###Commands:
 
 Look at: https://github.com/kmalakoff/easy-bake
-
-[1]: https://raw.github.com/kmalakoff/backbone-articulation/0.3.1/backbone-articulation.js
-[2]: https://raw.github.com/kmalakoff/backbone-articulation/0.3.1/backbone-articulation.min.js
-[3]: http://backbonejs.org/
-[4]: http://underscorejs.org/
-[5]: https://github.com/kmalakoff/json-serialize
-[6]: https://github.com/kmalakoff/lifecycle

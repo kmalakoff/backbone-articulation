@@ -15,8 +15,9 @@ module.exports =
   library_backbone_relational:
     output: 'lib'
     join: 'backbone-articulation-backbone-relational.js'
+    wrapper: 'src/module-loader.js'
     compress: true
-    files: 'src/backbone-articulation-backbone-relational.coffee'
+    files: 'src/backbone-relational/backbone-articulation-backbone-relational.coffee'
     _build:
       commands: [
         'cp lib/backbone-articulation-backbone-relational.js packages/npm/lib/backbone-articulation-backbone-relational.js'
@@ -49,9 +50,9 @@ module.exports =
 
   _postinstall:
     commands: [
-      'cp underscore vendor/underscore-latest.js'
-      'cp backbone vendor/backbone-latest.js'
-      'cp backbone-relational vendor/backbone-relational-latest.js'
-      'cp json-serialize vendor/json-serialize-latest.js'
-      'cp lifecycle vendor/lifecycle-latest.js'
+      'cp -v underscore vendor/underscore.js'
+      'cp -v backbone vendor/backbone.js'
+      'cp -v backbone-relational vendor/backbone-relational.js'
+      'cp -v json-serialize vendor/json-serialize.js'
+      'cp -v lifecycle vendor/lifecycle.js'
     ]

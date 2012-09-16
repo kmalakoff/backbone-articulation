@@ -1,22 +1,23 @@
 ###
-  backbone-articulation.js 0.3.3
-  (c) 2011, 2012 Kevin Malakoff.
-  Backbone-Articulation may be freely distributed under the MIT license.
-  https://github.com/kmalakoff/backbone-articulation
+  backbone-articulation.js 0.3.4
+  (c) 2011, 2012 Kevin Malakoff - http://kmalakoff.github.com/backbone-articulation/
+  License: MIT (http://www.opensource.org/licenses/mit-license.php)
+  Dependencies: Backbone.js, and Underscore.js.
 ###
 
-# import Underscore (or Lo-Dash with precedence) and Backbone
-if (typeof(require) != 'undefined') then (try _ = require('lodash') catch e then _ = require('underscore')) else _ = @_
-_ = _._ if _ and (_.hasOwnProperty('_')) # LEGACY
-Backbone = if (typeof(require) != 'undefined') then require('backbone') else @Backbone
+# import and re-export Underscore (or Lo-Dash with precedence), Backbone, and Knockout
+if not @_ and (typeof(require) isnt 'undefined') then (try _ = require('lodash') catch e then _ = require('underscore')) else _ = @_
+_ = if _.hasOwnProperty('_') then _._ else _ # LEGACY
+Backbone = if not @Backbone and (typeof(require) isnt 'undefined') then require('backbone') else @Backbone
+
 # import JSON-Serialize.js (JSONS.serialize, JSONS) and Lifecycle.js (LC.own, LC.disown)
-JSONS = if (typeof(require) != 'undefined') then require('json-serialize') else @JSONS
-LC = if (typeof(require) != 'undefined') then require('lifecycle') else @LC
+JSONS = if not @JSONS and (typeof(require) != 'undefined') then require('json-serialize') else @JSONS
+LC = if not @LC and (typeof(require) != 'undefined') then require('lifecycle') else @LC
 
 ##############################################
 # export or create Articulation namespace
 Backbone.Articulation = Articulation = if (typeof(exports) != 'undefined') then exports else {}
-Articulation.VERSION = '0.3.3'
+Articulation.VERSION = '0.3.4'
 
 # setting - if you set to true, you must provide String.prototype.underscore and String.prototype.singularize (for example, from inflection.js)
 # Note: this is not guaranteed to work unless Class.constructor.name exists
