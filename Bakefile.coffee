@@ -1,6 +1,7 @@
 module.exports =
   library_core:
     join: 'backbone-articulation.js'
+    wrapper: 'src/module-loader.js'
     compress: true
     files: 'src/backbone-articulation.coffee'
     _build:
@@ -15,7 +16,7 @@ module.exports =
   library_backbone_relational:
     output: 'lib'
     join: 'backbone-articulation-backbone-relational.js'
-    wrapper: 'src/module-loader.js'
+    wrapper: 'src/backbone-relational/module-loader.js'
     compress: true
     files: 'src/backbone-relational/backbone-articulation-backbone-relational.coffee'
     _build:
@@ -30,6 +31,8 @@ module.exports =
     _build:
       output: 'build'
       directories: [
+        'test/core'
+        'test/backbone-relational'
         'test/mixin'
       ]
       commands: [

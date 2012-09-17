@@ -20,7 +20,7 @@ Backbone.Articulation = Articulation = if (typeof(exports) != 'undefined') then 
 Articulation.VERSION = '0.3.4'
 
 # setting - if you set to true, you must provide String.prototype.underscore and String.prototype.singularize (for example, from inflection.js)
-# Note: this is not guaranteed to work unless Class.constructor.name exists
+# Note: @ is not guaranteed to work unless Class.constructor.name exists
 Articulation.TYPE_UNDERSCORE_SINGULARIZE = false
 
 Articulation._mixin = (target_constructor, source_constructor, source_fns) ->
@@ -53,10 +53,10 @@ class Articulation.Model extends Backbone.Model
     return json if json.hasOwnProperty(JSONS.TYPE_FIELD)
 
     # use the type field
-    (json[JSONS.TYPE_FIELD] = this[JSONS.TYPE_FIELD]; return json) if @hasOwnProperty(JSONS.TYPE_FIELD)
+    (json[JSONS.TYPE_FIELD] = @[JSONS.TYPE_FIELD]; return json) if @[JSONS.TYPE_FIELD]
 
     # use the class name
-    class_name = Object.getPrototypeOf(Object(this)).constructor.name
+    class_name = Object.getPrototypeOf(Object(@)).constructor.name
     return json unless class_name
 
     # convert the class using an underscore and singularize convention, eg. CouchDB "type" field convention
@@ -74,7 +74,7 @@ class Articulation.Model extends Backbone.Model
     return JSONS.deserialize( resp, {properties: true, skip_type_field: true})
 
   set: (attrs, options) ->
-    return this unless attrs
+    return @ unless attrs
     attrs = attrs.attributes if attrs.attributes
 
     # if an attribute changes, release the previous since it will get replaced
@@ -82,12 +82,12 @@ class Articulation.Model extends Backbone.Model
       continue if _.isEqual(@attributes[key], value)
       @_disownAttribute(key, @_previousAttributes[key]) if @_previousAttributes and (@_previousAttributes.hasOwnProperty(key))
       @_ownAttribute(key, value)
-    @__bba_super.prototype.set.apply(this, arguments)
+    @__bba_super.prototype.set.apply(@, arguments)
 
   unset: (attr, options) ->
-    return this unless attr of @attributes
+    return @ unless attr of @attributes
     @_disownAttribute(attr, @attributes[attr]) # if an attribute is unset, disown it
-    @__bba_super.prototype.unset.apply(this, arguments)
+    @__bba_super.prototype.unset.apply(@, arguments)
 
   clear: (options) ->
     # release attributes and previous attributes
@@ -95,12 +95,12 @@ class Articulation.Model extends Backbone.Model
 
     # if is it not silent, it will call change which will clear previous attributes
     (@_disownAttribute(key, @_previousAttributes[key]) for key of @_previousAttributes) if options and options.silent
-    @__bba_super.prototype.clear.apply(this, arguments)
+    @__bba_super.prototype.clear.apply(@, arguments)
 
   change: (options) ->
     # disown the previous attributes
     (@_disownAttribute key, @_previousAttributes[key]) for key of @_previousAttributes
-    result = @__bba_super.prototype.change.apply(this, arguments)
+    result = @__bba_super.prototype.change.apply(@, arguments)
 
     # own the new previous attributes
     (@_previousAttributes[key] = @_ownAttribute(key, @_previousAttributes[key])) for key of @_previousAttributes
@@ -158,11 +158,11 @@ class Articulation.Collection extends Backbone.Collection
     if event is "destroy"
       model._disownAttribute(key, model._previousAttributes[key]) for key of model._previousAttributes
       model._disownAttribute(key, model.attributes[key]) for key of model.attributes
-    @__bba_super.prototype._onModelEvent.apply(this, arguments)
+    @__bba_super.prototype._onModelEvent.apply(@, arguments)
 
   _removeReference: (model) ->
     model.clear({silent: true}) if model
-    @__bba_super.prototype._removeReference.apply(this, arguments)
+    @__bba_super.prototype._removeReference.apply(@, arguments)
 
   # allows mixin of Articulation.Model into existing hierarchies. Pass the constructor in to be mixed in.
   @mixin: (target_constructor) ->
