@@ -20,7 +20,7 @@ class window.CloneDestroy
 $(document).ready( ->
   module("backbone-articulation")
 
-  # library anf dependencies
+  # library and dependencies
   require(['underscore', 'backbone', 'backbone-articulation'], (_, Backbone, Articulation) ->
     _ or= @_; Backbone or= @Backbone # get underscore and backbone from the global namespace
 
