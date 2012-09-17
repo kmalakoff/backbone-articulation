@@ -6,10 +6,19 @@
 
 Backbone-Articulation.js enhances Backbone.js model attributes with object serialization and deserialization.
 
-You can get the library here:
+#Download Latest (0.3.4):
+
+Please see the [release notes](https://github.com/kmalakoff/backbone-articulation/blob/master/RELEASE_NOTES.md) for upgrade pointers.
 
 * [Development version](https://raw.github.com/kmalakoff/backbone-articulation/0.3.1/backbone-articulation.js)
 * [Production version](https://raw.github.com/kmalakoff/backbone-articulation/0.3.1/backbone-articulation.min.js)
+
+###Module Loading
+
+Backbone-Articulation.js is compatible with RequireJS, CommonJS, Brunch and AMD module loading. Module names:
+
+* 'backbone-articulation' - backbone-articulation.js.
+* 'backbone-articulation-backbone-relational' - backbone-articulation-backbone-relational.js.
 
 ### Dependencies
 
@@ -102,24 +111,6 @@ Backbone.Articulation.TYPE_UNDERSCORE_SINGULARIZE = true;
 That's it! Go crazy!
 
 A big thank you to Jeremy Ashkenas and DocumentCloud for making all of this Backbone awesomeness possible.
-
-# Release Notes
-
-###0.3.1
-
-- converted back to CoffeeScript
-
-- build using easy-bake
-
-- added packaging test
-
-- renamed 'backbone-articulation_core.js' to 'backbone-articulation.js'
-
-- removed the bundled version of backbone-articulation (now you must include JSON-Serialize.js and Lifecycle.js manually (see above)
-
-###0.3.4
-
-- removed Backbone.Model monkey patching and used change() instead
 
 
 Building, Running and Testing the library

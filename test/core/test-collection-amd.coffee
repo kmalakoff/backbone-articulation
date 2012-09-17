@@ -17,7 +17,7 @@ class window.CloneDestroy
   destroy: ->
     CloneDestroy.instance_count--
 
-$(document).ready( ->
+$(->
   module("backbone-articulation")
 
   # library and dependencies

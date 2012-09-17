@@ -1,4 +1,4 @@
-$(document).ready( ->
+$(->
   module("mixin")
 
   # import Underscore (or Lo-Dash with precedence), Backbone, and Articulation

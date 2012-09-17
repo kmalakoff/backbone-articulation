@@ -17,7 +17,7 @@ class window.CloneDestroy
   destroy: ->
     CloneDestroy.instance_count--
 
-$(document).ready( ->
+$(->
   module("backbone-articulation-backbone-relational")
 
   # import Underscore (or Lo-Dash with precedence), Backbone, Knockout, and Knockback

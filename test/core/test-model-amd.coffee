@@ -29,7 +29,7 @@ class SomeNamespace.SomeClass
       return _.isEqual(this_JSON, that)
     return false
 
-$(document).ready( ->
+$(->
   module("backbone-articulation")
 
   # library and dependencies
