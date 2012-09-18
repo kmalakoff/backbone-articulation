@@ -118,11 +118,11 @@ $(->
 
       retain: ->
         RetainRelease.retain_count++
-        @
+        return @
 
       release: ->
         RetainRelease.retain_count--
-        @
+        return @
 
     attributes = {id: 'superstar', attr1: {_type:'RetainRelease'}, attr2: {_type:'RetainRelease'}, attr3: {_type:'RetainRelease'}}
     model = new Backbone.Articulation.Model()
