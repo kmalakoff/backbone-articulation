@@ -10,8 +10,13 @@ Backbone-Articulation.js enhances Backbone.js model attributes with object seria
 
 Please see the [release notes](https://github.com/kmalakoff/backbone-articulation/blob/master/RELEASE_NOTES.md) for upgrade pointers.
 
-* [Development version](https://raw.github.com/kmalakoff/backbone-articulation/0.3.1/backbone-articulation.js)
-* [Production version](https://raw.github.com/kmalakoff/backbone-articulation/0.3.1/backbone-articulation.min.js)
+* [Development version](https://raw.github.com/kmalakoff/backbone-articulation/0.3.4/backbone-articulation.js)
+* [Production version](https://raw.github.com/kmalakoff/backbone-articulation/0.3.4/backbone-articulation.min.js)
+
+Backbone-Relational (optional):
+
+* [Development version](https://raw.github.com/kmalakoff/backbone-articulation/0.3.4/lib/backbone-articulation-backbone-relational.js)
+* [Production version](https://raw.github.com/kmalakoff/backbone-articulation/0.3.4/lib/backbone-articulation-backbone-relational.min.js)
 
 ###Module Loading
 
