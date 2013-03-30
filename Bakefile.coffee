@@ -55,7 +55,10 @@ module.exports =
     commands: [
       'cp -v underscore vendor/underscore.js'
       'cp -v backbone vendor/backbone.js'
-      'cp -v backbone-relational vendor/backbone-relational.js'
+      'cp -v backbone-relational vendor/optional/backbone-relational.js'
       'cp -v json-serialize vendor/json-serialize.js'
       'cp -v lifecycle vendor/lifecycle.js'
+      'cp -v lodash vendor/optional/lodash.js'
+      'uglifyjs -o vendor/optional/lodash-1.1.1.min.js vendor/optional/lodash-1.1.1.js'
+#        'cp -v lodash/lodash.min.js vendor/optional/lodash.min.js' # packaged lodash.min.js doesn't concatenate properly
     ]

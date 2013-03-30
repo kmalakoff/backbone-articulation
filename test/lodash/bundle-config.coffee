@@ -1,6 +1,6 @@
 module.exports =
   'test/lodash/build/bundle-lodash.js':
-    lodash: 'vendor/lodash-0.3.2.js'
+    lodash: 'vendor/optional/lodash-1.1.1.js'
     backbone: 'backbone'
     'backbone-relational': 'backbone-relational'
     'json-serialize': 'json-serialize'
