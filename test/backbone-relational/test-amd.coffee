@@ -15,14 +15,15 @@ try
         exports: 'Backbone'
         deps: ['underscore']
       'backbone-relational':
-        exports: 'Backbone'
         deps: ['backbone']
+      'backbone-articulation-backbone-relational':
+        deps: ['backbone-relational']
   })
 
   # library and dependencies
-  require ['underscore', 'backbone', 'backbone-relational', 'backbone-articulation', 'backbone-articulation-backbone-relational', 'qunit_test_runner'], (_, Backbone, Articulation, abbr, runner) ->
+  require ['underscore', 'backbone', 'backbone-articulation', 'backbone-relational', 'backbone-articulation-backbone-relational', 'qunit_test_runner'], (_, Backbone, Articulation, bbr, abbr, runner) ->
     window._ = window.Backbone = null # force each test to require dependencies synchronously
-    require ['./build/test'], -> runner.start()
+    runner.start(); require ['./build/test'], ->
 
 catch error
   alert("AMD tests failed: '#{error}'")
