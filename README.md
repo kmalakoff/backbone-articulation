@@ -8,6 +8,8 @@ Backbone-Articulation.js enhances Backbone.js model attributes with object seria
 
 #Download Latest (0.3.4):
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/kmalakoff/backbone-articulation.svg)](https://greenkeeper.io/)
+
 Please see the [release notes](https://github.com/kmalakoff/backbone-articulation/blob/master/RELEASE_NOTES.md) for upgrade pointers.
 
 * [Development version](https://raw.github.com/kmalakoff/backbone-articulation/0.3.4/backbone-articulation.js)
